@@ -1,0 +1,175 @@
+/* HARNESS PRO - Apple.com Minimalist Dark Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+    --bg-page: #000000;
+    --bg-surface: #161617;
+    --bg-surface-elevated: #1d1d1f;
+    --bg-surface-subtle: #2d2d30;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.22);
+    --text-primary: #f5f5f7;
+    --text-secondary: #86868b;
+    --text-tertiary: #6e6e73;
+    --apple-blue: #2997ff;
+    --apple-blue-solid: #0071e3;
+    --apple-emerald: #30d158;
+    --apple-amber: #ffd60a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    letter-spacing: -0.015em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apple Subtle Contrast Gradients */
+.apple-hero-headline {
+    background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.apple-accent-gradient {
+    background: linear-gradient(90deg, #2997ff 0%, #985eff 50%, #ff5277 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.apple-commercial-gradient {
+    background: linear-gradient(135deg, #ffd60a 0%, #ff9f0a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Apple Frosted Glass Header & Panels */
+.apple-blur {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.apple-card-blur {
+    background: rgba(22, 22, 23, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Apple Bento Box Card */
+.apple-bento {
+    background-color: #161617;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.apple-bento:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    transform: scale([1.008]);
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Apple Style Pill Buttons */
+.apple-btn-primary {
+    background-color: #0071e3;
+    color: #ffffff;
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.apple-btn-primary:hover {
+    background-color: #0077ed;
+}
+
+.apple-btn-white {
+    background-color: #f5f5f7;
+    color: #000000;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.apple-btn-white:hover {
+    background-color: #ffffff;
+    box-shadow: 0 4px 18px rgba(255, 255, 255, 0.25);
+}
+
+.apple-btn-secondary {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.apple-btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.apple-link {
+    color: #2997ff;
+    transition: color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.apple-link:hover {
+    color: #70baff;
+    text-decoration: underline;
+}
+
+/* Custom Minimalist Dark Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #000000;
+}
+::-webkit-scrollbar-thumb {
+    background: #2d2d30;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #424245;
+}
+
+/* Apple Slider */
+input[type=range] {
+    accent-color: #2997ff;
+}
+
+/* Form controls in Dark Mode */
+.apple-input {
+    background-color: #1d1d1f;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #f5f5f7;
+    border-radius: 18px;
+    transition: all 0.2s ease;
+}
+.apple-input:focus {
+    outline: none;
+    border-color: #2997ff;
+    box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.2);
+    background-color: #161617;
+}
+
+/* Animations */
+@keyframes appleFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-appleFadeIn {
+    animation: appleFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Thí Nghiệm Đạo Diễn - HARNESS STUDIO</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-white text-zinc-900 min-h-screen flex flex-col antialiased selection:bg-black selection:text-white relative overflow-x-hidden bg-grid-pattern">
+
+    <!-- Header Container Dùng Chung -->
+    <div id="header-container" data-active="test" class="relative z-50"></div>
+    <script src="js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+
+        <!-- Top Title & Health Status Banner -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 mb-8 border-b border-zinc-200">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-800 border border-zinc-200 mb-3 shadow-2xs">
+                    <i class="fa-solid fa-flask-vial text-zinc-500"></i> Testing Laboratory
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-extrabold text-black tracking-tight">
+                    Thử Nghiệm & Đánh Giá <span class="underline decoration-zinc-300 underline-offset-8">Đạo Diễn Kịch Bản</span>
+                </h1>
+                <p class="text-xs sm:text-sm text-zinc-600 mt-2 max-w-2xl leading-relaxed">
+                    Trang kiểm thử chuyên dụng dành cho Đạo Diễn Kịch Bản. Nhập prompt ý tưởng, chọn thể loại và phong cách để kiểm tra cấu trúc phân cảnh cùng Visual Prompt sinh ra.
+                </p>
+            </div>
+
+            <!-- Health Status Badge -->
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <div id="backend-status-badge" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-50 border border-zinc-200 text-zinc-600 shadow-2xs">
+                    <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-zinc-400"></span>
+                    <span id="backend-status-text">Đang kiểm tra kết nối...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 Columns Grid: Inputs vs Results -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- LEFT COLUMN: CONTROLS & PROMPTS (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Input Card -->
+                <div class="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm space-y-5">
+                    
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-bold text-black uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-zinc-500"></i> Cấu Hình Đầu Vào
+                        </h2>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-random-preset" title="Chọn ngẫu nhiên mẫu ý tưởng"
+                                class="text-xs px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-all flex items-center gap-1.5 font-medium">
+                                <i class="fa-solid fa-dice text-zinc-500"></i> Mẫu ngẫu nhiên
+                            </button>
+                            <button type="button" id="btn-clear-form" title="Xóa trắng nội dung"
+                                class="text-xs px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-red-50 text-zinc-500 hover:text-red-600 border border-zinc-200 transition-all">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Story Prompt Textarea -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="story-prompt-input" class="text-xs font-bold text-zinc-800">
+                                Ý tưởng / Câu chuyện đầu vào <span class="text-red-500">*</span>
+                            </label>
+                            <span class="text-[11px] text-zinc-400 font-mono">
+                                <span id="char-count">0</span> ký tự
+                            </span>
+                        </div>
+                        <textarea id="story-prompt-input" rows="4"
+                            placeholder="Nhập ý tưởng câu chuyện của bạn ở đây... Ví dụ: Một phi hành gia phát hiện ra một khu rừng pha lê phát sáng dưới lòng đại dương sao Hỏa..."
+                            class="w-full px-4 py-3 rounded-2xl bg-zinc-50 border border-zinc-200 focus:bg-white focus:border-black focus:ring-1 focus:ring-black text-zinc-900 text-sm placeholder-zinc-400 transition-all resize-none outline-none leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Story Type Selection -->
+                    <div>
+                        <label class="text-xs font-bold text-zinc-800 block mb-2">
+                            Thể loại kịch bản (Độ dài phân cảnh)
+                        </label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="relative flex items-center p-3 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-zinc-400 cursor-pointer transition-all has-[:checked]:border-black has-[:checked]:bg-zinc-100 group">
+                                <input type="radio" name="story_type" value="short" checked class="text-black focus:ring-black h-4 w-4 border-zinc-300">
+                                <div class="ml-3">
+                                    <div class="text-xs font-bold text-zinc-900 group-hover:text-black">Truyện ngắn</div>
+                                    <div class="text-[10px] text-zinc-500 font-medium">3 - 5 phân cảnh</div>
+                                </div>
+                            </label>
+                            <label class="relative flex items-center p-3 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-zinc-400 cursor-pointer transition-all has-[:checked]:border-black has-[:checked]:bg-zinc-100 group">
+                                <input type="radio" name="story_type" value="long" class="text-black focus:ring-black h-4 w-4 border-zinc-300">
+                                <div class="ml-3">
+                                    <div class="text-xs font-bold text-zinc-900 group-hover:text-black">Truyện dài</div>
+                                    <div class="text-[10px] text-zinc-500 font-medium">8 - 12 phân cảnh</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Visual Art Style Selection -->
+                    <div>
+                        <label for="style-select" class="text-xs font-bold text-zinc-800 block mb-1.5">
+                            Phong cách hình ảnh nghệ thuật (Visual Art Style)
+                        </label>
+                        <div class="relative">
+                            <select id="style-select"
+                                class="w-full appearance-none px-4 py-3 rounded-2xl bg-zinc-50 border border-zinc-200 focus:bg-white focus:border-black focus:ring-1 focus:ring-black text-zinc-900 text-sm transition-all outline-none cursor-pointer">
+                                <option value="Cinematic" selected>🎬 Cinematic (Điện ảnh hoành tráng, ánh sáng chân thực)</option>
+                                <option value="3D Pixar">🧸 3D Pixar Animation (Phong cách hoạt hình 3D cao cấp)</option>
+                                <option value="Anime">🌸 Japanese Anime (Phong cách hoạt hình Nhật Bản)</option>
+                                <option value="Cyberpunk">🌆 Cyberpunk Neon (Khoa học viễn tưởng, tương lai)</option>
+                                <option value="Dark Fantasy">⚔️ Dark Fantasy (Kỳ ảo tăm tối, ma mị)</option>
+                                <option value="Watercolor">🎨 Vintage Watercolor (Tranh màu nước cổ điển)</option>
+                                <option value="Comic Book">💥 Comic Book Graphic Novel (Truyện tranh nét đậm)</option>
+                                <option value="Realistic Photography">📸 Realistic Photography (Ảnh chụp thực tế góc rộng)</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-zinc-500 text-xs">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Primary Action Button -->
+                    <button type="button" id="btn-generate-story"
+                        class="w-full py-3.5 px-6 rounded-2xl font-bold text-sm text-white bg-black hover:bg-zinc-800 active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-clapperboard"></i> Bắt đầu phân tích & Tạo kịch bản
+                    </button>
+
+                </div>
+
+                <!-- Quick Preset Cards -->
+                <div class="bg-white border border-zinc-200 rounded-3xl p-5 shadow-xs">
+                    <div class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-zinc-700"></i> Mẫu kịch bản có sẵn để test nhanh
+                    </div>
+                    <div id="preset-container" class="grid grid-cols-1 gap-2">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: RESULTS & VIEWER (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- 1. EMPTY STATE (Khi chưa chạy test) -->
+                <div id="empty-results-state" class="bg-zinc-50/70 border border-dashed border-zinc-300 rounded-3xl p-10 sm:p-14 text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-white border border-zinc-200 text-zinc-800 flex items-center justify-center text-2xl mx-auto mb-4 shadow-sm">
+                        <i class="fa-solid fa-clapperboard"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-zinc-900 mb-2">Chưa có dữ liệu phân cảnh</h3>
+                    <p class="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto mb-6">
+                        Hãy chọn một mẫu kịch bản hoặc nhập ý tưởng ở cột bên trái và nhấn <b class="text-black">"Bắt đầu phân tích"</b> để xem hệ thống xử lý câu chuyện.
+                    </p>
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 text-[11px] text-zinc-600 shadow-2xs font-medium">
+                        <i class="fa-solid fa-circle-check text-emerald-600"></i> Hệ thống phân cảnh điện ảnh & tối ưu hóa kịch bản tự động
+                    </div>
+                </div>
+
+                <!-- 2. LOADING PROGRESS BANNER -->
+                <div id="loading-progress-banner" class="hidden bg-white border border-zinc-300 rounded-3xl p-6 shadow-xl space-y-4 animate-fadeIn">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center text-lg shadow-sm">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-black">Hệ thống đang phân tích kịch bản</h4>
+                                <p class="text-xs text-zinc-500">Đang khởi tạo chuỗi phân cảnh và visual prompts...</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span id="elapsed-timer" class="text-sm font-mono font-bold text-black">0.0s</span>
+                            <span class="block text-[10px] text-zinc-400">thời gian thực</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Step Indicators -->
+                    <div class="pt-3 border-t border-zinc-100 space-y-2">
+                        <div id="prog-step-1" class="flex items-center gap-2 text-black text-xs font-semibold animate-pulse">
+                            <i class="fa-solid fa-circle-notch fa-spin text-[10px] text-zinc-800"></i> 1. Phân tích cốt truyện & cấu trúc mạch tự sự
+                        </div>
+                        <div id="prog-step-2" class="flex items-center gap-2 text-zinc-400 text-xs">
+                            <i class="fa-solid fa-circle text-[6px]"></i> 2. Thiết lập tuyến nhân vật, tâm lý & môi trường ánh sáng
+                        </div>
+                        <div id="prog-step-3" class="flex items-center gap-2 text-zinc-400 text-xs">
+                            <i class="fa-solid fa-circle text-[6px]"></i> 3. Chia tách phân cảnh & tối ưu Visual Prompts cho Storyboard
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ERROR STATE BANNER -->
+                <div id="error-results-state" class="hidden bg-red-50 border border-red-200 rounded-3xl p-6 text-red-900">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-circle-exclamation text-red-600 text-xl mt-0.5"></i>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-bold text-red-800 mb-1">Xảy ra lỗi trong quá trình xử lý</h4>
+                            <p id="error-message-text" class="text-xs text-red-700 leading-relaxed font-mono bg-white p-3 rounded-xl border border-red-200 mt-2">
+                                Không thể kết nối với Hệ thống Đạo Diễn.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. RESULTS DASHBOARD -->
+                <div id="results-dashboard" class="hidden space-y-6">
+
+                    <!-- Result Header Metrics -->
+                    <div class="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-4 border-b border-zinc-100">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span id="res-type-badge" class="text-[10px] px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-800 font-semibold border border-zinc-200 uppercase tracking-wider">Truyện ngắn</span>
+                                    <span id="res-scene-count" class="text-[10px] px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-800 font-semibold border border-zinc-200">0 cảnh</span>
+                                </div>
+                                <h2 id="res-title" class="text-xl sm:text-2xl font-extrabold text-black">Tiêu đề kịch bản</h2>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <button type="button" id="btn-copy-all-prompts"
+                                    class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200 transition-all flex items-center gap-1.5">
+                                    <i class="fa-regular fa-copy text-zinc-500"></i> Copy Prompts
+                                </button>
+                                <button type="button" id="btn-download-json"
+                                    class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200 transition-all flex items-center gap-1.5">
+                                    <i class="fa-solid fa-download text-zinc-500"></i> JSON
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Sub Info Bar -->
+                        <div class="flex items-center justify-between text-xs text-zinc-500">
+                            <span id="res-time-badge" class="font-mono text-[11px] text-zinc-700 font-semibold">Thời gian xử lý: 0s</span>
+                            <span class="text-[11px] text-zinc-400">Engine: Đạo Diễn Kịch Bản Chuyên Nghiệp</span>
+                        </div>
+                    </div>
+
+                    <!-- View Mode Tabs Bar -->
+                    <div class="flex items-center justify-between bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200">
+                        <div class="flex items-center gap-1">
+                            <button type="button" data-view-tab="grid"
+                                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white text-black shadow-xs border border-zinc-200 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-table-cells-large text-zinc-600"></i> Storyboard Grid
+                            </button>
+                            <button type="button" data-view-tab="script"
+                                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-zinc-600 hover:text-black hover:bg-white/60 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-file-lines text-zinc-500"></i> Kịch Bản Phim
+                            </button>
+                            <button type="button" data-view-tab="json"
+                                class="px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-zinc-600 hover:text-black hover:bg-white/60 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-code text-zinc-500"></i> Dữ Liệu JSON
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1 CONTENT: STORYBOARD GRID -->
+                    <div id="view-grid-content" class="space-y-4">
+                        <!-- Injected by test_director.js -->
+                    </div>
+
+                    <!-- TAB 2 CONTENT: SCREENPLAY SCRIPT -->
+                    <div id="view-script-content" class="hidden">
+                        <!-- Injected by test_director.js -->
+                    </div>
+
+                    <!-- TAB 3 CONTENT: RAW JSON VIEWER -->
+                    <div id="view-json-content" class="hidden">
+                        <div class="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-3 pb-3 border-b border-zinc-100">
+                                <span class="text-xs font-mono text-zinc-600 font-bold">API RESPONSE PAYLOAD (JSON)</span>
+                                <button type="button" id="btn-copy-raw-json"
+                                    class="text-xs px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200 transition-all flex items-center gap-1.5 font-medium">
+                                    <i class="fa-regular fa-copy"></i> Sao chép JSON
+                                </button>
+                            </div>
+                            <pre id="json-raw-display" class="font-mono text-xs text-zinc-800 bg-zinc-50 p-4 rounded-2xl border border-zinc-200 overflow-x-auto max-h-[600px] leading-relaxed select-all"></pre>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-zinc-200 bg-zinc-50/80 py-8 text-center text-xs text-zinc-500 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 space-y-1.5">
+            <div class="flex items-center justify-center gap-2">
+                <span class="font-bold text-black">HARNESS STUDIO &copy; 2026</span>
+                <span>•</span>
+                <span>Tác giả: <b class="text-black font-semibold">bigblyatcccp</b></span>
+            </div>
+            <p class="text-[11px] text-zinc-400">Dự án Khoa Học Kỹ Thuật JSB12 - Hệ thống Biên kịch & Kiến tạo Storyboard Điện Ảnh</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/header.js"></script>
+    <script src="js/test_director.js"></script>
+</body>
+</html>

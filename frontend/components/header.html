@@ -1,0 +1,106 @@
+<header
+    class="sticky top-0 z-50 apple-blur border-b border-white/[0.08] transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between h-14">
+
+            <!-- Apple Style Logo Brand -->
+            <div class="flex-shrink-0 flex items-center gap-3">
+                <a href="/" class="flex items-center gap-2.5 group">
+                    <div class="w-7 h-7 rounded-lg bg-white/10 border border-white/15 flex items-center justify-center text-white group-hover:scale-105 transition duration-200">
+                        <i class="fa-solid fa-clapperboard text-xs text-[#2997ff]"></i>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold tracking-tight text-[#f5f5f7]">HARNESS<span class="text-[#2997ff]">.PRO</span></span>
+                        <span class="hidden sm:inline-block text-[10px] font-mono uppercase tracking-widest text-[#86868b] border-l border-white/15 pl-2">KHKT JSB12</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Apple Desktop Nav Menu -->
+            <nav class="hidden md:flex items-center space-x-7 text-xs font-normal" id="desktop-nav">
+                <a href="/" data-nav="home"
+                    class="nav-item text-[#f5f5f7]/75 hover:text-white transition-colors duration-150 py-1">
+                    Tổng Quan
+                </a>
+                <a href="/storyboard" data-nav="storyboard"
+                    class="nav-item text-[#f5f5f7]/75 hover:text-white transition-colors duration-150 py-1">
+                    Storyboard Studio
+                </a>
+                <a href="/chat" data-nav="chat"
+                    class="nav-item text-[#f5f5f7]/75 hover:text-white transition-colors duration-150 py-1">
+                    Trợ Lý Hướng Nghiệp
+                </a>
+                <a href="/gallery" data-nav="gallery"
+                    class="nav-item text-[#f5f5f7]/75 hover:text-white transition-colors duration-150 py-1">
+                    Kho Portfolio
+                </a>
+                <a href="/info" data-nav="info"
+                    class="nav-item text-[#f5f5f7]/75 hover:text-white transition-colors duration-150 py-1">
+                    Bạch Thư & Báo Giá
+                </a>
+            </nav>
+
+            <!-- User Token Quota & Apple Action Button -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                
+                <!-- Token Pill Badge -->
+                <button type="button" onclick="showClaimTokensModal()" title="Bấm để nhận thêm Tokens miễn phí hoặc nâng cấp gói"
+                    class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-xs text-[#f5f5f7] transition cursor-pointer">
+                    <span class="text-[#ffd60a] text-xs"><i class="fa-solid fa-bolt"></i></span>
+                    <span class="font-mono font-semibold text-xs user-token-display">500</span>
+                    <span class="text-[10px] text-[#86868b] font-normal">Tokens</span>
+                    <span class="text-[9px] bg-white/15 text-[#f5f5f7] px-1 py-0.2 rounded-full font-mono ml-0.5">+</span>
+                </button>
+
+                <!-- Apple Style CTA -->
+                <a href="/storyboard"
+                    class="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium bg-[#0071e3] hover:bg-[#0077ed] text-white transition-all shadow-sm">
+                    Vào Studio
+                </a>
+
+                <!-- Mobile Hamburger Button -->
+                <button id="hamburger-btn" type="button" aria-label="Toggle Navigation"
+                    class="inline-flex md:hidden items-center justify-center p-1.5 rounded-lg text-[#86868b] hover:text-white hover:bg-white/10 border border-white/10 focus:outline-none transition">
+                    <svg id="hamburger-icon" class="block h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg id="close-icon" class="hidden h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu"
+        class="hidden md:hidden border-t border-white/[0.08] apple-blur transition-all duration-300">
+        <div class="px-6 py-4 space-y-3 text-sm font-normal">
+            <a href="/" data-nav="home"
+                class="mobile-nav-item block text-[#f5f5f7]/80 hover:text-white py-1">
+                Tổng Quan
+            </a>
+            <a href="/storyboard" data-nav="storyboard"
+                class="mobile-nav-item block text-[#f5f5f7]/80 hover:text-white py-1">
+                Storyboard Studio
+            </a>
+            <a href="/chat" data-nav="chat"
+                class="mobile-nav-item block text-[#f5f5f7]/80 hover:text-white py-1">
+                Trợ Lý Hướng Nghiệp
+            </a>
+            <a href="/gallery" data-nav="gallery"
+                class="mobile-nav-item block text-[#f5f5f7]/80 hover:text-white py-1">
+                Kho Portfolio
+            </a>
+            <a href="/info" data-nav="info"
+                class="mobile-nav-item block text-[#f5f5f7]/80 hover:text-white py-1">
+                Bạch Thư & Báo Giá
+            </a>
+        </div>
+    </div>
+</header>

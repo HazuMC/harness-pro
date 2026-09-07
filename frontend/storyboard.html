@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi" class="bg-black text-[#f5f5f7]">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HARNESS PRO - Storyboard Production Studio</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-black text-[#f5f5f7] min-h-screen flex flex-col antialiased selection:bg-[#2997ff] selection:text-black">
+
+    <!-- Apple Global Navigation -->
+    <div id="header-container" data-active="storyboard" class="relative z-50"></div>
+    <script src="js/header.js"></script>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10 space-y-8">
+
+        <!-- Top Studio Bar (Apple Pro Header) -->
+        <div class="apple-bento p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-[#2997ff]">Multi-Agent Studio Pro</span>
+                    <span class="text-white/20">•</span>
+                    <span class="text-xs text-[#86868b]">Hướng Nghiệp & Thương Mại</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-white">
+                    Storyboard Studio.
+                </h1>
+                <p class="text-xs sm:text-sm text-[#86868b] max-w-2xl">
+                    Tự động phân tích kịch bản, bóc tách cỡ cảnh điện ảnh và kết xuất chuỗi khung hình thương mại hoàn chỉnh.
+                </p>
+            </div>
+
+            <!-- Apple Pill Segment Switcher -->
+            <div class="flex items-center gap-1 p-1 bg-[#1d1d1f] rounded-full border border-white/10 text-xs">
+                <button type="button" id="mode-commercial-btn" onclick="switchStudioMode('commercial')"
+                    class="px-4 py-1.5 rounded-full bg-white text-black font-semibold transition cursor-pointer">
+                    Thương Mại & TVC
+                </button>
+                <button type="button" id="mode-career-btn" onclick="switchStudioMode('career')"
+                    class="px-4 py-1.5 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer">
+                    Đồ Án Hướng Nghiệp
+                </button>
+            </div>
+        </div>
+
+        <!-- Apple Stepper Bar -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="pipeline-stepper-bar">
+            
+            <div id="step-ind-1" class="flex items-center gap-3 p-4 rounded-2xl bg-[#161617] border border-[#0071e3] text-white transition-all">
+                <div class="w-7 h-7 rounded-full bg-[#0071e3] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
+                <div class="min-w-0">
+                    <div class="text-xs font-semibold text-white truncate">Bước 1: Đạo Diễn Kịch Bản</div>
+                    <div class="text-[10px] text-[#86868b] truncate">Phân bổ cấu trúc hồi truyện</div>
+                </div>
+            </div>
+
+            <div id="step-ind-2" class="flex items-center gap-3 p-4 rounded-2xl bg-[#161617] border border-white/[0.08] text-[#86868b] transition-all">
+                <div class="w-7 h-7 rounded-full bg-white/10 text-[#86868b] flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
+                <div class="min-w-0">
+                    <div class="text-xs font-semibold text-[#86868b] truncate">Bước 2: Bóc Tách Khung Cảnh</div>
+                    <div class="text-[10px] text-[#6e6e73] truncate">Cỡ cảnh, góc quay & continuity</div>
+                </div>
+            </div>
+
+            <div id="step-ind-3" class="flex items-center gap-3 p-4 rounded-2xl bg-[#161617] border border-white/[0.08] text-[#86868b] transition-all">
+                <div class="w-7 h-7 rounded-full bg-white/10 text-[#86868b] flex items-center justify-center font-bold text-xs flex-shrink-0">3</div>
+                <div class="min-w-0">
+                    <div class="text-xs font-semibold text-[#86868b] truncate">Bước 3: Kết Xuất Storyboard</div>
+                    <div class="text-[10px] text-[#6e6e73] truncate">Sinh chuỗi ảnh giữ nhân vật</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Main Studio Grid Layout (5 Cols Controls vs 7 Cols Output Canvas) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- LEFT COLUMN: CONTROLS & PARAMS (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+
+                <!-- Control Panel Bento -->
+                <div class="apple-bento p-6 sm:p-7 space-y-5">
+                    
+                    <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                        <h2 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-[#2997ff]"></i> Cấu Hình Dự Án
+                        </h2>
+                        <span id="studio-mode-pill" class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/10 text-[#2997ff] border border-white/15">
+                            Thương Mại & TVC
+                        </span>
+                    </div>
+
+                    <!-- 1-Click Quick Template Presets -->
+                    <div>
+                        <label class="text-xs font-medium text-[#f5f5f7] block mb-1.5 flex items-center justify-between">
+                            <span>Mẫu kịch bản có sẵn:</span>
+                            <span class="text-[10px] text-[#2997ff] font-mono">Bấm để nạp nhanh</span>
+                        </label>
+                        <select id="sb-template-presets" onchange="applyStudioTemplate(this.value)"
+                            class="apple-input w-full px-3.5 py-2.5 text-xs outline-none cursor-pointer">
+                            <option value="">-- Chọn mẫu kịch bản gợi ý --</option>
+                            <optgroup label="💼 Kịch Bản Thương Mại & TVC" class="bg-[#1d1d1f] text-white">
+                                <option value="tvc_beverage">🥤 TVC Quảng Cáo Nước Giải Khát Tươi Mát (30s)</option>
+                                <option value="tvc_smartphone">📱 TVC Ra Mắt Smartphone Hi-Tech Siêu Phẩm (30s)</option>
+                                <option value="corporate_story">🏢 Phim Câu Chuyện Thương Hiệu Kỷ Niệm 10 Năm</option>
+                                <option value="real_estate">🏡 Video Giới Thiệu Biệt Thự Nghỉ Dưỡng Ven Biển</option>
+                                <option value="tiktok_ecom">🛍️ Video Viral TikTok Bán Hàng E-Commerce Hút Khách</option>
+                            </optgroup>
+                            <optgroup label="🎓 Thực Hành Hướng Nghiệp & Đồ Án" class="bg-[#1d1d1f] text-white">
+                                <option value="edu_filmmaker">🎬 Đồ Án Hướng Nghiệp: Phim Ngắn Học Đường</option>
+                                <option value="edu_dop_action">⚔️ Bài Tập Đạo Diễn: Màn Đối Đầu Dưới Mưa Đêm</option>
+                                <option value="edu_scifi">🚀 Bài Tập Biên Kịch: Trạm Không Gian Sao Mộc</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- Story Prompt Textarea -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="sb-story-prompt" class="text-xs font-medium text-[#f5f5f7]">
+                                Ý tưởng câu chuyện / Yêu cầu TVC <span class="text-red-400">*</span>
+                            </label>
+                            <span class="text-[10px] text-[#86868b] font-mono">Chi tiết giúp ảnh đẹp hơn</span>
+                        </div>
+                        <textarea id="sb-story-prompt" rows="4"
+                            placeholder="Nhập mô tả ý tưởng kịch bản hoặc yêu cầu TVC... Ví dụ: TVC 30s quảng cáo tai nghe chống ồn cao cấp, nhân vật bước đi giữa phố xá ồn ào và chìm đắm vào không gian âm nhạc tĩnh lặng..."
+                            class="apple-input w-full px-4 py-3 text-xs sm:text-sm placeholder-[#6e6e73] transition resize-none outline-none leading-relaxed"></textarea>
+                    </div>
+
+                    <!-- Visual Prompts Quick Tags -->
+                    <div>
+                        <div class="text-[11px] text-[#86868b] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-tags text-[#2997ff]"></i> Chi tiết kỹ thuật gợi ý:
+                        </div>
+                        <div class="flex flex-wrap gap-1.5" id="tag-helpers">
+                            <button type="button" onclick="appendTagToPrompt('Ánh sáng TVC Studio cao cấp, phản chiếu giọt nước long lanh')"
+                                class="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[#f5f5f7] border border-white/10 transition font-mono">+ Ánh Sáng TVC</button>
+                            <button type="button" onclick="appendTagToPrompt('Cận cảnh chi tiết sản phẩm Macro 4K cực nét')"
+                                class="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[#f5f5f7] border border-white/10 transition font-mono">+ Macro 4K</button>
+                            <button type="button" onclick="appendTagToPrompt('Góc máy thấp Low-angle quyền lực và hiện đại')"
+                                class="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[#f5f5f7] border border-white/10 transition font-mono">+ Góc Low-Angle</button>
+                            <button type="button" onclick="appendTagToPrompt('Không gian công nghệ hiện đại, ánh sáng tương phản cao')"
+                                class="text-[11px] px-2.5 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-[#f5f5f7] border border-white/10 transition font-mono">+ Tech Minimalist</button>
+                        </div>
+                    </div>
+
+                    <!-- Story Length & Style Select -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                        <div>
+                            <label class="text-xs font-medium text-[#f5f5f7] block mb-1.5">Thời lượng</label>
+                            <select id="sb-story-type"
+                                class="apple-input w-full px-3 py-2.5 text-xs outline-none cursor-pointer">
+                                <option value="short" selected>TVC Ngắn (3 - 5 cảnh)</option>
+                                <option value="long">Phim Dài (6 - 8 cảnh)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-medium text-[#f5f5f7] block mb-1.5">Phong cách nghệ thuật</label>
+                            <select id="sb-style"
+                                class="apple-input w-full px-3 py-2.5 text-xs outline-none cursor-pointer">
+                                <option value="TVC Commercial 4K" selected>📸 TVC Commercial 4K</option>
+                                <option value="3D Product Render">💎 3D Product Render</option>
+                                <option value="Cinematic">🎬 Cinematic Điện Ảnh</option>
+                                <option value="TikTok Viral Dynamic">📱 TikTok Social Dynamic</option>
+                                <option value="3D Pixar">🧸 3D Pixar Animation</option>
+                                <option value="Anime">🌸 Japanese Anime</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Primary Trigger Button -->
+                    <div class="pt-3 border-t border-white/[0.08]">
+                        <button type="button" id="btn-create-storyboard"
+                            class="apple-btn-white w-full py-3.5 px-6 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                            <i class="fa-solid fa-wand-magic-sparkles text-[#0071e3]"></i>
+                            <span>Tạo Storyboard Ngay</span>
+                        </button>
+                        <p class="text-[11px] text-[#86868b] text-center mt-2.5">
+                            Quy trình tự động: Kịch bản &rarr; Bóc tách góc máy &rarr; Kết xuất Storyboard.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Commercial Valuation Box (Apple Spec Style) -->
+                <div class="apple-bento p-5 space-y-3 text-xs">
+                    <div class="font-semibold text-white uppercase text-[11px] flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar text-[#2997ff]"></i> Dự Toán Giá Trị</span>
+                        <span class="text-[10px] font-mono bg-white/10 text-[#30d158] px-2 py-0.5 rounded-full font-bold">Thị Trường</span>
+                    </div>
+                    <div class="space-y-2 text-[11px] text-[#86868b] font-mono">
+                        <div class="flex items-center justify-between border-b border-white/[0.06] pb-1.5">
+                            <span>Giá trị Storyboard thị trường:</span>
+                            <span class="text-white font-bold">~5.000.000 - 15.000.000đ</span>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-white/[0.06] pb-1.5">
+                            <span>Thời gian tiền kỳ tiết kiệm:</span>
+                            <span class="text-[#2997ff] font-bold">~16 Giờ làm việc</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Chi phí thực thi với AI:</span>
+                            <span class="text-[#30d158] font-bold">50 Tokens</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: OUTPUT CANVAS (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Loading HUD Banner with real-time steps -->
+                <div id="sb-loading-banner"
+                    class="hidden apple-bento p-6 space-y-4 animate-appleFadeIn">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-9 h-9 rounded-full bg-white/10 text-white flex items-center justify-center text-sm shadow-sm">
+                            <i class="fa-solid fa-spinner fa-spin text-[#2997ff]"></i>
+                        </div>
+                        <div>
+                            <h4 id="sb-loading-title" class="text-sm font-semibold text-white">Đang sản xuất Storyboard...</h4>
+                            <p id="sb-loading-desc" class="text-xs text-[#86868b]">Hệ thống đang thiết lập kịch bản, bóc tách cỡ cảnh và vẽ chuỗi khung hình tuần tự.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-white/[0.08] space-y-2">
+                        <div id="sb-prog-step-1" class="flex items-center gap-2 text-white text-xs font-medium animate-pulse">
+                            <i class="fa-solid fa-circle-notch fa-spin text-[10px] text-[#2997ff]"></i> 1. Đạo diễn kịch bản & phân bổ hồi truyện
+                        </div>
+                        <div id="sb-prog-step-2" class="flex items-center gap-2 text-[#6e6e73] text-xs">
+                            <i class="fa-solid fa-circle text-[6px]"></i> 2. Bóc tách cỡ cảnh, góc quay & tính nhất quán (Continuity)
+                        </div>
+                        <div id="sb-prog-step-3" class="flex items-center gap-2 text-[#6e6e73] text-xs">
+                            <i class="fa-solid fa-circle text-[6px]"></i> 3. Kết xuất chuỗi hình ảnh Storyboard
+                        </div>
+                    </div>
+
+                    <!-- Waiting Mini Game -->
+                    <div id="waiting-minigame-area" class="pt-4 border-t border-white/[0.08]">
+                        <div class="bg-[#1d1d1f] rounded-2xl p-4 text-center space-y-3 border border-white/10">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs font-semibold text-white uppercase tracking-wider">
+                                    <i class="fa-solid fa-gamepad text-[#ffd60a]"></i> Mini Game Trong Lúc Chờ
+                                </div>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-[#f5f5f7]">Chơi Ngay</span>
+                            </div>
+
+                            <!-- Runner Game -->
+                            <div id="runner-game-container" class="space-y-2">
+                                <div class="overflow-hidden rounded-xl border border-white/10 bg-black flex justify-center">
+                                    <canvas id="minigame-canvas" class="w-full max-w-[600px] h-[140px] cursor-pointer"></canvas>
+                                </div>
+                                <div class="text-[11px] text-[#86868b] flex items-center justify-center gap-3">
+                                    <span>👉 Nhấn <b>Phím Cách (Space)</b> để nhảy</span>
+                                    <button type="button" onclick="startWaitingMiniGame()" class="text-[#2997ff] hover:underline cursor-pointer text-xs">Đổi game</button>
+                                </div>
+                            </div>
+
+                            <!-- Memory Game -->
+                            <div id="memory-game-container" class="hidden space-y-2">
+                                <div id="memory-game-board" class="p-2"></div>
+                                <div class="text-[11px] text-[#86868b]">
+                                    <button type="button" onclick="startWaitingMiniGame()" class="text-[#2997ff] hover:underline cursor-pointer text-xs">Đổi game</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty Initial State -->
+                <div id="sb-empty-state"
+                    class="apple-bento p-12 sm:p-16 text-center space-y-4 border-dashed border-white/15">
+                    <div class="w-14 h-14 rounded-2xl bg-white/[0.06] border border-white/10 text-[#2997ff] flex items-center justify-center text-xl mx-auto">
+                        <i class="fa-solid fa-clapperboard"></i>
+                    </div>
+                    <div class="max-w-md mx-auto space-y-1.5">
+                        <h3 class="text-base font-semibold text-white">Chưa Khởi Tạo Dự Án Storyboard</h3>
+                        <p class="text-xs text-[#86868b] leading-relaxed">
+                            Chọn mẫu gợi ý hoặc nhập ý tưởng ở cột bên trái và bấm <b class="text-white">"Tạo Storyboard"</b> để nhận bộ khung hình phân cảnh điện ảnh & thương mại hoàn chỉnh.
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/10 text-[11px] text-[#86868b]">
+                        <i class="fa-solid fa-circle-check text-[#30d158]"></i> Hỗ trợ cả đồ án hướng nghiệp và TVC thương mại
+                    </div>
+                </div>
+
+                <!-- Results Storyboard Canvas -->
+                <div id="sb-results-container" class="hidden space-y-6">
+
+                    <!-- Results Header Action Bar -->
+                    <div class="apple-bento p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span id="sb-res-badge-type"
+                                    class="text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-white font-mono">TVC Thương Mại</span>
+                                <span id="sb-res-badge-frames"
+                                    class="text-[10px] px-2.5 py-0.5 rounded-full bg-white/[0.06] text-[#86868b] font-mono">0 khung hình</span>
+                            </div>
+                            <h2 id="sb-res-title" class="text-xl font-bold text-white">Tiêu đề Storyboard</h2>
+                        </div>
+
+                        <!-- Action Toolbar Buttons -->
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <button type="button" id="sb-btn-save-gallery"
+                                class="apple-btn-white px-4 py-2 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-bookmark text-[11px]"></i> Lưu Portfolio
+                            </button>
+                            <button type="button" id="sb-btn-download-json"
+                                class="apple-btn-secondary px-3.5 py-2 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-download text-[11px]"></i> Tải JSON
+                            </button>
+                            <button type="button" onclick="exportPitchDeck()"
+                                class="apple-btn-secondary px-3.5 py-2 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-solid fa-print text-[11px]"></i> In Pitch Deck
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Storyboard Frames List -->
+                    <div id="sb-frames-grid" class="space-y-6"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Apple Footer -->
+    <footer class="mt-20 border-t border-white/[0.08] bg-[#161617] py-8 text-center text-xs text-[#86868b] relative z-10">
+        <div class="max-w-6xl mx-auto px-4 space-y-1">
+            <div class="flex items-center justify-center gap-2">
+                <span class="font-semibold text-white">HARNESS PRO &copy; 2026</span>
+                <span>•</span>
+                <span>Tác giả: <b class="text-[#f5f5f7]">bigblyatcccp</b></span>
+            </div>
+            <p class="text-[11px] text-[#6e6e73]">Dự án Nghiên Cứu KHKT JSB12 - Nền Tảng Hướng Nghiệp & Kiến Tạo Storyboard Thương Mại</p>
+        </div>
+    </footer>
+
+    <!-- Helper Scripts -->
+    <script>
+        function appendTagToPrompt(tag) {
+            const el = document.getElementById("sb-story-prompt");
+            if (!el) return;
+            if (el.value.trim().length > 0) {
+                el.value = el.value.trim() + ", " + tag;
+            } else {
+                el.value = tag;
+            }
+            el.focus();
+        }
+
+        function switchStudioMode(mode) {
+            const commBtn = document.getElementById("mode-commercial-btn");
+            const careerBtn = document.getElementById("mode-career-btn");
+            const modePill = document.getElementById("studio-mode-pill");
+
+            if (mode === 'commercial') {
+                commBtn.className = "px-4 py-1.5 rounded-full bg-white text-black font-semibold transition cursor-pointer";
+                careerBtn.className = "px-4 py-1.5 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer";
+                modePill.textContent = "Thương Mại & TVC";
+            } else {
+                careerBtn.className = "px-4 py-1.5 rounded-full bg-white text-black font-semibold transition cursor-pointer";
+                commBtn.className = "px-4 py-1.5 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer";
+                modePill.textContent = "Đồ Án Hướng Nghiệp";
+            }
+        }
+
+        function applyStudioTemplate(val) {
+            const promptEl = document.getElementById("sb-story-prompt");
+            const styleEl = document.getElementById("sb-style");
+            const typeEl = document.getElementById("sb-story-type");
+            if (!val || !promptEl) return;
+
+            const templates = {
+                tvc_beverage: {
+                    prompt: "TVC 30s quảng cáo thức uống thể thao tăng lực ion tự nhiên. Mở đầu bằng hình ảnh vận động viên chạy nước rút kiệt sức dưới cái nóng oi ả, tiếng tim đập dồn dập; khi mở nắp chai, làn sóng nước mát lạnh và bọt khí bắn tóe giải phóng nguồn năng lượng tinh khiết, đưa anh bứt phá về đích trong tiếng reo hò.",
+                    style: "TVC Commercial 4K",
+                    type: "short"
+                },
+                tvc_smartphone: {
+                    prompt: "TVC thương mại giới thiệu dòng điện thoại flagship mới. Góc máy lướt mượt mà qua các góc cạnh titan siêu mỏng, ống kính camera tiềm vọng phản chiếu ánh sao vũ trụ trong studio tối; màn hình không viền bừng sáng hiển thị hình ảnh 8K sống động, khẳng định đẳng cấp công nghệ tiên phong.",
+                    style: "3D Product Render",
+                    type: "short"
+                },
+                corporate_story: {
+                    prompt: "Phim câu chuyện thương hiệu kỷ niệm 10 năm thành lập tập đoàn công nghệ. Bắt đầu từ gian phòng trọ nhỏ nơi hai nhà sáng lập thức trắng đêm gõ từng dòng mã nguồn, vượt qua giai đoạn khủng hoảng thị trường để vươn mình thành doanh nghiệp quy mô nghìn nhân sự với tầm nhìn phụng sự cộng đồng.",
+                    style: "Cinematic",
+                    type: "long"
+                },
+                real_estate: {
+                    prompt: "Video giới thiệu quần thể biệt thự nghỉ dưỡng cao cấp ven biển. Góc flycam từ đại dương bay vào bãi cát trắng mịn, bình minh rực rỡ chiếu vào ban công kính trong suốt nhìn ra hoàng hôn; không gian nội thất sang trọng với hồ bơi vô cực liền kề sóng biển.",
+                    style: "TVC Commercial 4K",
+                    type: "short"
+                },
+                tiktok_ecom: {
+                    prompt: "Kịch bản video TikTok 45s review máy hút bụi thông minh không dây. Hook 3 giây mở đầu bằng cảnh bánh snack bị vỡ nát trên thảm dày; nhân vật chính chỉ cần lướt nhẹ một tay là sạch bóng trong 5 giây, kết thúc bằng lời kêu gọi bấm vào giỏ hàng nhận voucher giảm 40%.",
+                    style: "TikTok Viral Dynamic",
+                    type: "short"
+                },
+                edu_filmmaker: {
+                    prompt: "Đồ án phim ngắn học đường: 'Tiếng Đàn Sau Cánh Cửa'. Cậu học sinh nhút nhát luôn giấu tài năng chơi piano của mình, cho đến buổi chiều mưa bão khi phòng âm nhạc trường bị ngắt điện, tiếng đàn réo rắt của cậu đã kết nối cả hội trường trong ánh đèn pin ấm áp.",
+                    style: "Cinematic",
+                    type: "short"
+                },
+                edu_dop_action: {
+                    prompt: "Bài tập rèn luyện góc máy DoP: Màn đối đầu giữa hai cao thủ kiếm đạo dưới mưa đêm tại cổng thành cổ. Sử dụng góc cận cảnh ánh mắt nảy lửa, góc quay chậm hạt mưa rơi trên lưỡi kiếm kim loại và góc Low-angle khi hai kiếm sĩ cùng lao vào nhau quyết định số phận.",
+                    style: "Cinematic",
+                    type: "short"
+                },
+                edu_scifi: {
+                    prompt: "Bài tập biên kịch viễn tưởng: Nữ kỹ sư điều khiển robot dò tìm mẫu nước ngầm cuối cùng dưới lòng sao Hỏa. Khi thiết bị khoan chạm vào tầng đá phát sáng màu ngọc bích, một tín hiệu âm thanh cổ xưa được kích hoạt hướng thẳng về Trái Đất.",
+                    style: "Cinematic",
+                    type: "short"
+                }
+            };
+
+            const t = templates[val];
+            if (t) {
+                promptEl.value = t.prompt;
+                if (styleEl && t.style) styleEl.value = t.style;
+                if (typeEl && t.type) typeEl.value = t.type;
+            }
+        }
+
+        function exportPitchDeck() {
+            window.print();
+        }
+    </script>
+
+    <script src="js/tokens.js"></script>
+    <script src="js/minigame.js"></script>
+    <script src="js/storyboard.js"></script>
+</body>
+
+</html>

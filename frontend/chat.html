@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi" class="bg-black text-[#f5f5f7]">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HARNESS PRO - Trợ Lý Hướng Nghiệp & Biên Kịch Thương Mại</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-black text-[#f5f5f7] min-h-screen flex flex-col antialiased selection:bg-[#2997ff] selection:text-black">
+
+    <!-- Apple Global Navigation -->
+    <div id="header-container" data-active="chat" class="relative z-50"></div>
+    <script src="js/header.js"></script>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10 space-y-8">
+
+        <!-- Top Title Banner -->
+        <div class="apple-bento p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-mono uppercase tracking-widest text-[#2997ff]">Intelligence Copilot</span>
+                    <span class="text-white/20">•</span>
+                    <span class="text-xs text-[#86868b]">Trợ Lý Hướng Nghiệp & Biên Kịch 24/7</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-white">
+                    Trợ Lý Hướng Nghiệp & Biên Kịch.
+                </h1>
+                <p class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
+                    Tư vấn lộ trình nghề nghiệp sáng tạo số, giải đáp kỹ thuật điện ảnh và hỗ trợ lên kịch bản phân cảnh TVC, video viral TikTok.
+                </p>
+            </div>
+
+            <!-- Top Actions -->
+            <div class="flex items-center gap-2.5">
+                <button type="button" id="btn-clear-chat"
+                    class="apple-btn-secondary px-4 py-2 text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-trash-can text-[#86868b]"></i> Làm mới
+                </button>
+                <a href="/storyboard"
+                    class="apple-btn-white px-4 py-2 text-xs font-semibold flex items-center gap-2">
+                    <span>Vào Studio</span> &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Chat Studio Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- LEFT COLUMN: COPILOT TOOLKIT (4 Cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Quick Genre Presets with Apple Pill Tabs -->
+                <div class="apple-bento p-6 space-y-4">
+                    
+                    <div class="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+                        <h3 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-[#ffd60a]"></i> Chủ Đề Gợi Ý Nhanh
+                        </h3>
+                    </div>
+
+                    <!-- Apple Pill Switcher -->
+                    <div class="grid grid-cols-2 gap-1 p-1 bg-[#1d1d1f] rounded-full border border-white/10 text-xs">
+                        <button type="button" id="tab-btn-commercial" onclick="switchPresetTab('commercial')"
+                            class="py-1.5 px-2 rounded-full bg-white text-black font-semibold transition cursor-pointer">
+                            Thương Mại & TVC
+                        </button>
+                        <button type="button" id="tab-btn-career" onclick="switchPresetTab('career')"
+                            class="py-1.5 px-2 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer">
+                            Hướng Nghiệp
+                        </button>
+                    </div>
+
+                    <!-- Commercial Presets List -->
+                    <div class="space-y-2" id="commercial-presets-list">
+                        <button type="button" data-preset-prompt="Hãy lên cho tôi kịch bản TVC 30s quảng cáo thức uống thể thao, chú trọng góc máy Extreme Close-Up giọt mồ hôi và năng lượng bùng nổ khi uống."
+                            class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🥤 TVC Nước uống thể thao 30s</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Cấu trúc năng lượng bứt phá & Macro cận cảnh</span>
+                        </button>
+                        <button type="button" data-preset-prompt="Gợi ý kịch bản video TikTok 45s review giải pháp máy lọc không khí thông minh, sử dụng Hook 3 giây đầu gây tò mò và kêu gọi đặt mua."
+                            class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">📱 Video TikTok E-Com Hook 3s</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Giải pháp giữ chân người xem & chốt đơn</span>
+                        </button>
+                        <button type="button" data-preset-prompt="Lên ý tưởng phim câu chuyện thương hiệu kỷ niệm 10 năm của một công ty khởi nghiệp công nghệ từ số 0 đến doanh nghiệp nghìn tỷ."
+                            class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🏢 Phim Thương Hiệu Doanh Nghiệp</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Tái hiện khát vọng khởi nghiệp & thành tựu</span>
+                        </button>
+                    </div>
+
+                    <!-- Career Presets List (Hidden by default) -->
+                    <div class="space-y-2 hidden" id="career-presets-list">
+                        <button type="button" data-preset-prompt="Tôi thích viết lách và tưởng tượng nhưng chưa biết bắt đầu từ đâu. Giữa Biên kịch điện ảnh và Copywriter quảng cáo, tôi nên chọn hướng nào?"
+                            class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🎯 Định hướng: Biên kịch vs Copywriter</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Tư vấn thế mạnh bản thân & cơ hội nghề</span>
+                        </button>
+                        <button type="button" data-preset-prompt="Để trở thành một Đạo diễn Hình ảnh (DoP) chuyên nghiệp tại các Production House, tôi cần trau dồi những kỹ năng và kinh nghiệm gì?"
+                            class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🎥 Lộ trình trở thành DoP chuyên nghiệp</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Kỹ năng góc máy, ánh sáng & kinh nghiệm</span>
+                        </button>
+                        <button type="button" data-preset-prompt="Hãy phân tích mức lương và nhu cầu tuyển dụng của vị trí Storyboard Artist và Creative Producer trong ngành truyền thông hiện nay."
+                            class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">💰 Thu nhập & Tiềm năng ngành Sáng tạo</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Báo cáo mức thu nhập và cơ hội thăng tiến</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Camera Shots Cheatsheet -->
+                <div class="apple-bento p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+                        <h3 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-video text-[#2997ff]"></i> Bảng Chuẩn Cỡ Cảnh
+                        </h3>
+                        <span class="text-[10px] text-[#86868b] font-mono">Screenplay</span>
+                    </div>
+
+                    <div class="text-[11px] text-[#86868b] space-y-2 font-mono">
+                        <div class="flex justify-between border-b border-white/[0.06] pb-1.5">
+                            <span class="text-white">Wide Shot (WS)</span>
+                            <span>Toàn cảnh bối cảnh</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/[0.06] pb-1.5">
+                            <span class="text-white">Medium Shot (MS)</span>
+                            <span>Trung cảnh nửa người</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/[0.06] pb-1.5">
+                            <span class="text-white">Close-Up (CU)</span>
+                            <span>Cận cảnh cảm xúc</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/[0.06] pb-1.5">
+                            <span class="text-white">Over-the-Shoulder (OTS)</span>
+                            <span>Góc qua vai đối thoại</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-white">Macro Shot (ECU)</span>
+                            <span>Đặc tả chi tiết sản phẩm</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: INTERACTIVE CHAT (8 Cols) -->
+            <div class="lg:col-span-8 flex flex-col apple-bento overflow-hidden min-h-[640px]">
+                
+                <!-- Chat Window Header -->
+                <div class="p-5 border-b border-white/[0.08] flex items-center justify-between bg-[#161617]">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-robot text-[#2997ff]"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-sm font-semibold text-white">HARNESS Intelligence Copilot</h2>
+                                <span class="w-2 h-2 rounded-full bg-[#30d158] animate-pulse"></span>
+                            </div>
+                            <p class="text-[11px] text-[#86868b]">Huấn luyện chuyên sâu về Điện ảnh, TVC & Hướng nghiệp số</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-mono text-[#86868b] border border-white/10 px-2 py-0.5 rounded-full">
+                        AI Active
+                    </span>
+                </div>
+
+                <!-- Messages Container -->
+                <div id="chat-messages" class="flex-grow p-6 overflow-y-auto space-y-4 max-h-[500px]">
+                    
+                    <!-- Welcome Message -->
+                    <div class="flex items-start gap-3 animate-appleFadeIn">
+                        <div class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-white flex-shrink-0 mt-0.5">
+                            <i class="fa-solid fa-clapperboard text-[#2997ff]"></i>
+                        </div>
+                        <div class="bg-[#1d1d1f] border border-white/10 rounded-2xl rounded-tl-none p-5 max-w-2xl text-xs sm:text-sm text-[#f5f5f7] leading-relaxed space-y-3 shadow-sm">
+                            <p class="font-bold text-white text-sm">
+                                Xin chào! Tôi là Trợ Lý AI Hướng Nghiệp & Biên Kịch Thương Mại của HARNESS PRO.
+                            </p>
+                            <p class="text-[#86868b]">
+                                Tôi sẵn sàng đồng hành cùng bạn trong hai nhiệm vụ trọng tâm:
+                            </p>
+                            <ul class="space-y-1.5 text-xs text-[#f5f5f7] list-disc list-inside">
+                                <li><b>🎓 Định hướng nghề nghiệp:</b> Tư vấn thế mạnh, kỹ năng cần học và lộ trình trở thành Biên kịch, DoP hoặc Storyboard Artist chuyên nghiệp.</li>
+                                <li><b>💼 Sản xuất thương mại:</b> Xây dựng kịch bản phân cảnh TVC, video viral TikTok, phim giới thiệu doanh nghiệp chuẩn điện ảnh.</li>
+                            </ul>
+                            <p class="text-xs text-[#86868b] pt-1 border-t border-white/10">
+                                Hãy chọn gợi ý ở cột bên trái hoặc nhập yêu cầu trực tiếp bên dưới nhé!
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Input Box -->
+                <div class="p-4 border-t border-white/[0.08] bg-[#161617]">
+                    <form id="chat-form" class="flex items-center gap-3">
+                        <div class="relative flex-grow">
+                            <textarea id="chat-input" rows="1"
+                                placeholder="Hỏi về hướng nghiệp, kỹ năng điện ảnh, hoặc: 'Lên kịch bản TVC 30s về...'"
+                                class="apple-input w-full px-4 py-3 text-xs sm:text-sm placeholder-[#6e6e73] outline-none transition resize-none leading-normal"></textarea>
+                        </div>
+                        <button type="submit" id="btn-send-chat"
+                            class="apple-btn-white w-10 h-10 rounded-full flex items-center justify-center transition flex-shrink-0 cursor-pointer">
+                            <i class="fa-solid fa-arrow-up text-xs text-black"></i>
+                        </button>
+                    </form>
+                    <div class="flex items-center justify-between text-[10px] text-[#6e6e73] mt-2 px-1">
+                        <span>Nhấn <b>Enter</b> để gửi, <b>Shift + Enter</b> để xuống dòng</span>
+                        <span>Dự án KHKT JSB12 • bigblyatcccp</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Apple Footer -->
+    <footer class="mt-20 border-t border-white/[0.08] bg-[#161617] py-8 text-center text-xs text-[#86868b] relative z-10">
+        <div class="max-w-6xl mx-auto px-4 space-y-1">
+            <div class="flex items-center justify-center gap-2">
+                <span class="font-semibold text-white">HARNESS PRO &copy; 2026</span>
+                <span>•</span>
+                <span>Tác giả: <b class="text-[#f5f5f7]">bigblyatcccp</b></span>
+            </div>
+            <p class="text-[11px] text-[#6e6e73]">Trợ Lý Hướng Nghiệp & Biên Kịch Thương Mại Điện Ảnh</p>
+        </div>
+    </footer>
+
+    <!-- Tab Switcher Script -->
+    <script>
+        function switchPresetTab(tab) {
+            const commBtn = document.getElementById("tab-btn-commercial");
+            const careerBtn = document.getElementById("tab-btn-career");
+            const commList = document.getElementById("commercial-presets-list");
+            const careerList = document.getElementById("career-presets-list");
+
+            if (tab === 'commercial') {
+                commBtn.className = "py-1.5 px-2 rounded-full bg-white text-black font-semibold transition cursor-pointer";
+                careerBtn.className = "py-1.5 px-2 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer";
+                commList.classList.remove("hidden");
+                careerList.classList.add("hidden");
+            } else {
+                careerBtn.className = "py-1.5 px-2 rounded-full bg-white text-black font-semibold transition cursor-pointer";
+                commBtn.className = "py-1.5 px-2 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer";
+                careerList.classList.remove("hidden");
+                commList.classList.add("hidden");
+            }
+        }
+    </script>
+
+    <script src="js/tokens.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>

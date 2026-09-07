@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="vi" class="bg-black text-[#f5f5f7]">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HARNESS PRO - Định Hình Nghề Nghiệp Sáng Tạo & Kiến Tạo Storyboard Thương Mại</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    },
+                    colors: {
+                        apple: {
+                            bg: '#000000',
+                            card: '#161617',
+                            cardElevated: '#1d1d1f',
+                            text: '#f5f5f7',
+                            muted: '#86868b',
+                            blue: '#2997ff',
+                            blueDark: '#0071e3',
+                            emerald: '#30d158',
+                            amber: '#ffd60a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-black text-[#f5f5f7] min-h-screen flex flex-col antialiased selection:bg-[#2997ff] selection:text-black">
+
+    <!-- Apple Minimalist Global Navigation -->
+    <div id="header-container" data-active="home" class="relative z-50"></div>
+    <script src="js/header.js"></script>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-28 sm:space-y-36">
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 1: APPLE HERO SECTION - TỐI GIẢN & ẤN TƯỢNG -->
+        <!-- ========================================================================= -->
+        <section class="text-center max-w-4xl mx-auto space-y-6 pt-6 sm:pt-10">
+            
+            <!-- Apple Subtle KHKT Tag -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-normal text-[#86868b] bg-white/[0.05] border border-white/10">
+                <span class="w-2 h-2 rounded-full bg-[#30d158] animate-pulse"></span>
+                <span class="text-[#f5f5f7]">Dự Án KHKT JSB12</span>
+                <span class="text-white/20">•</span>
+                <span>Tác giả: <b class="text-[#f5f5f7] font-medium font-mono">bigblyatcccp</b></span>
+            </div>
+
+            <!-- Apple Large Bold Headlines -->
+            <div class="space-y-3">
+                <h2 class="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#2997ff]">
+                    HƯỚNG NGHIỆP SÁNG TẠO & SẢN XUẤT THƯƠNG MẠI
+                </h2>
+                <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[1.05] apple-hero-headline">
+                    HARNESS PRO
+                </h1>
+                <p class="text-xl sm:text-3xl font-medium tracking-tight text-[#f5f5f7] max-w-2xl mx-auto pt-1">
+                    Trí tuệ nhân tạo định hình nghề nghiệp.
+                    <span class="text-[#86868b] block sm:inline">Kiến tạo kịch bản & Storyboard thương mại.</span>
+                </p>
+            </div>
+
+            <!-- Apple Pill CTA Buttons -->
+            <div class="pt-4 flex flex-wrap items-center justify-center gap-3.5">
+                <a href="/storyboard"
+                    class="apple-btn-white px-7 py-3 text-xs sm:text-sm inline-flex items-center gap-2">
+                    <span>Bắt Đầu Với Studio</span>
+                    <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                </a>
+                <a href="#career-hub"
+                    class="apple-btn-secondary px-6 py-3 text-xs sm:text-sm inline-flex items-center gap-2">
+                    <span>Bản Đồ Nghề Nghiệp</span>
+                </a>
+                <a href="#roi-calculator"
+                    class="apple-link text-xs sm:text-sm font-medium px-3 py-2">
+                    <span>Tính ROI Tiết Kiệm</span> &rarr;
+                </a>
+            </div>
+
+            <!-- Apple Specs Grid (Subtle, High-Precision Metrics) -->
+            <div class="pt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+                <div class="p-6 rounded-2xl bg-[#161617] border border-white/10 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-bold tracking-tight text-white font-mono">-85%</div>
+                    <div class="text-xs font-semibold text-[#f5f5f7]">Thời Gian Tiền Kỳ</div>
+                    <div class="text-[11px] text-[#86868b]">Từ 2 tuần xuống còn 15 phút</div>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#161617] border border-white/10 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-bold tracking-tight text-[#30d158] font-mono">-70%</div>
+                    <div class="text-xs font-semibold text-[#f5f5f7]">Ngân Sách Phác Thảo</div>
+                    <div class="text-[11px] text-[#86868b]">Tiết kiệm chi phí pitch nhãn hàng</div>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#161617] border border-white/10 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-bold tracking-tight text-[#2997ff] font-mono">5+ Vị Trí</div>
+                    <div class="text-xs font-semibold text-[#f5f5f7]">Chuẩn Nghề Sáng Tạo</div>
+                    <div class="text-[11px] text-[#86868b]">Kỹ năng thực chiến theo chuẩn ngành</div>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#161617] border border-white/10 space-y-1">
+                    <div class="text-3xl sm:text-4xl font-bold tracking-tight text-[#ffd60a] font-mono">100%</div>
+                    <div class="text-xs font-semibold text-[#f5f5f7]">Chuẩn Screenplay</div>
+                    <div class="text-[11px] text-[#86868b]">Bóc tách góc máy & Continuity</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 2: BẢN ĐỒ HƯỚNG NGHIỆP (APPLE BENTO CARDS) -->
+        <!-- ========================================================================= -->
+        <section id="career-hub" class="space-y-8 scroll-mt-24">
+            <div class="max-w-2xl space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-[#2997ff]">
+                    ĐỊNH HƯỚNG NGHỀ NGHIỆP
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white">
+                    Bản Đồ Nghề Sáng Tạo Số.
+                </h2>
+                <p class="text-sm sm:text-base text-[#86868b] leading-relaxed">
+                    Trang bị kiến thức và bộ kỹ năng thực chiến để bạn sẵn sàng gia nhập ngành công nghiệp điện ảnh, truyền thông và tiếp thị số.
+                </p>
+            </div>
+
+            <!-- Apple Bento Grid (4 Positions) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Bento Card 1: Biên Kịch TVC -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-white text-base">
+                            <i class="fa-solid fa-pen-nib text-[#2997ff]"></i>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-mono text-[#2997ff] uppercase tracking-wider">Vị Trí #1</div>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white mt-0.5">Biên Kịch Quảng Cáo & TVC</h3>
+                            <div class="text-xs text-[#86868b]">Commercial Copywriter & Scriptwriter</div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-[#86868b] leading-relaxed">
+                            Xây dựng cốt truyện thuyết phục, cấu trúc Hook 3 giây đầu, thông điệp USP nhãn hàng và kịch bản phân cảnh AIDA chốt đơn.
+                        </p>
+                        <div class="p-4 rounded-xl bg-white/[0.04] border border-white/[0.08] space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Thu nhập thị trường:</span>
+                                <span class="font-mono font-bold text-[#30d158]">18M - 45M VNĐ / tháng</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Kỹ năng then chốt:</span>
+                                <span class="text-[#f5f5f7]">Storytelling, Hook 3s, Phân tích Insight</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="loadCareerPreset('tvc_copywriter')"
+                        class="apple-link text-xs font-semibold cursor-pointer">
+                        <span>Rèn luyện kịch bản này với Studio</span> &rarr;
+                    </button>
+                </div>
+
+                <!-- Bento Card 2: Đạo Diễn Hình Ảnh (DoP) -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-white text-base">
+                            <i class="fa-solid fa-video text-[#ffd60a]"></i>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-mono text-[#ffd60a] uppercase tracking-wider">Vị Trí #2</div>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white mt-0.5">Đạo Diễn Hình Ảnh (DoP)</h3>
+                            <div class="text-xs text-[#86868b]">Director of Photography & Camera Lead</div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-[#86868b] leading-relaxed">
+                            Làm chủ cỡ cảnh (Wide/Medium/Close-up), góc quay điện ảnh (Dutch tilt, Low-angle), chuyển động máy quay và ngôn ngữ ánh sáng thương mại.
+                        </p>
+                        <div class="p-4 rounded-xl bg-white/[0.04] border border-white/[0.08] space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Thu nhập thị trường:</span>
+                                <span class="font-mono font-bold text-[#30d158]">25M - 70M VNĐ / dự án</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Kỹ năng then chốt:</span>
+                                <span class="text-[#f5f5f7]">Bố cục khung hình, Góc máy, Ánh sáng TVC</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="loadCareerPreset('dop_cinematographer')"
+                        class="apple-link text-xs font-semibold cursor-pointer">
+                        <span>Rèn luyện góc máy với Studio</span> &rarr;
+                    </button>
+                </div>
+
+                <!-- Bento Card 3: Visual Storyboard Artist -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-white text-base">
+                            <i class="fa-solid fa-paintbrush text-[#985eff]"></i>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-mono text-[#985eff] uppercase tracking-wider">Vị Trí #3</div>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white mt-0.5">Visual Storyboard Artist</h3>
+                            <div class="text-xs text-[#86868b]">Họa Sĩ Phác Thảo Phân Cảnh</div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-[#86868b] leading-relaxed">
+                            Trực quan hóa kịch bản chữ thành hình ảnh chi tiết, bảo toàn tính nhất quán (Continuity) diện mạo nhân vật và sản phẩm qua từng khung hình.
+                        </p>
+                        <div class="p-4 rounded-xl bg-white/[0.04] border border-white/[0.08] space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Thu nhập thị trường:</span>
+                                <span class="font-mono font-bold text-[#30d158]">15M - 40M VNĐ / tháng</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Kỹ năng then chốt:</span>
+                                <span class="text-[#f5f5f7]">Visual Prompting, Continuity, Phối cảnh</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="loadCareerPreset('storyboard_artist')"
+                        class="apple-link text-xs font-semibold cursor-pointer">
+                        <span>Rèn luyện phân cảnh với Studio</span> &rarr;
+                    </button>
+                </div>
+
+                <!-- Bento Card 4: TikTok & Video Marketer -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/[0.08] border border-white/10 flex items-center justify-center text-white text-base">
+                            <i class="fa-solid fa-hashtag text-[#30d158]"></i>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-mono text-[#30d158] uppercase tracking-wider">Vị Trí #4</div>
+                            <h3 class="text-xl sm:text-2xl font-bold text-white mt-0.5">TikTok & Video Marketer</h3>
+                            <div class="text-xs text-[#86868b]">Sáng Tạo Video Thương Mại Số</div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-[#86868b] leading-relaxed">
+                            Bắt nhịp xu hướng mạng xã hội, thiết kế kịch bản video ngắn giữ chân người xem và tối ưu hóa tỷ lệ chuyển đổi cho gian hàng E-commerce.
+                        </p>
+                        <div class="p-4 rounded-xl bg-white/[0.04] border border-white/[0.08] space-y-2 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Thu nhập thị trường:</span>
+                                <span class="font-mono font-bold text-[#30d158]">20M - 60M VNĐ / tháng</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[#86868b]">Kỹ năng then chốt:</span>
+                                <span class="text-[#f5f5f7]">Viral Hook, Call to Action, Thuật toán</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="loadCareerPreset('viral_marketer')"
+                        class="apple-link text-xs font-semibold cursor-pointer">
+                        <span>Rèn luyện video viral với Studio</span> &rarr;
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 3: BỘ TÍNH ROI THƯƠNG MẠI (APPLE PRO CALCULATOR) -->
+        <!-- ========================================================================= -->
+        <section id="roi-calculator" class="apple-bento p-8 sm:p-14 space-y-10 scroll-mt-24">
+            <div class="max-w-2xl space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-[#30d158]">
+                    TỐI ƯU HÓA KINH TẾ
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white">
+                    Hiệu Quả Thương Mại Vượt Trội.
+                </h2>
+                <p class="text-sm sm:text-base text-[#86868b] leading-relaxed">
+                    Thay vì mất hàng tuần và hàng chục triệu VNĐ cho mỗi lần vẽ storyboard pitching, HARNESS PRO giúp doanh nghiệp giảm chi phí đến 70% và hoàn thành ngay trong 15 phút.
+                </p>
+            </div>
+
+            <!-- Apple Style Interactive Calculator -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left: Slider Control -->
+                <div class="lg:col-span-6 bg-[#1d1d1f] p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-[#86868b] font-medium">Số kịch bản Storyboard cần sản xuất mỗi tháng:</span>
+                        <span id="display-video-count" class="font-mono font-bold text-base text-white bg-white/10 px-3 py-1 rounded-full border border-white/15">4 kịch bản</span>
+                    </div>
+
+                    <input type="range" id="calc-video-count" min="1" max="25" value="4" step="1"
+                        class="w-full h-2 bg-white/15 rounded-lg appearance-none cursor-pointer"
+                        oninput="updateRoiCalculation()">
+
+                    <div class="flex justify-between text-[11px] text-[#86868b] font-mono">
+                        <span>1 dự án (Startup)</span>
+                        <span>10 dự án (Agency)</span>
+                        <span>25+ dự án (Enterprise)</span>
+                    </div>
+
+                    <div class="space-y-2 pt-3 border-t border-white/10 text-xs text-[#86868b]">
+                        <div class="flex justify-between">
+                            <span>Chi phí vẽ tay truyền thống:</span>
+                            <span class="font-mono text-white">~15.000.000 VNĐ / dự án</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Thời gian phác thảo thủ công:</span>
+                            <span class="font-mono text-white">~7 - 10 ngày làm việc</span>
+                        </div>
+                        <div class="flex justify-between text-[#2997ff]">
+                            <span>Chi phí với HARNESS PRO:</span>
+                            <span class="font-mono font-bold text-[#30d158]">Chỉ ~299.000 VNĐ / tháng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: High Impact Numbers -->
+                <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <div class="p-6 rounded-2xl bg-[#1d1d1f] border border-white/10 space-y-1">
+                        <div class="text-[11px] font-mono uppercase text-[#30d158] font-semibold">Ngân Sách Tiết Kiệm Được / Tháng</div>
+                        <div id="calc-money-saved" class="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight">58.8 Triệu VNĐ</div>
+                        <p class="text-xs text-[#86868b] leading-relaxed pt-1">
+                            Cắt giảm trực tiếp chi phí concept thử nghiệm trước khi bấm máy sản xuất thực tế.
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-[#1d1d1f] border border-white/10 space-y-1">
+                        <div class="text-[11px] font-mono uppercase text-[#2997ff] font-semibold">Thời Gian Giải Phóng / Tháng</div>
+                        <div id="calc-time-saved" class="text-3xl sm:text-4xl font-bold font-mono text-white tracking-tight">32 ngày</div>
+                        <p class="text-xs text-[#86868b] leading-relaxed pt-1">
+                            Tăng tốc độ phản hồi brief cho nhãn hàng lên gấp 10 lần, nâng tỷ lệ chốt deal dự án.
+                        </p>
+                    </div>
+
+                    <div class="sm:col-span-2 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-between gap-4 text-xs">
+                        <span class="text-[#86868b]">
+                            💡 Ký hợp đồng bằng Storyboard trực quan giúp loại bỏ 100% rủi ro bất đồng sau quay.
+                        </span>
+                        <a href="/storyboard" class="apple-link font-semibold whitespace-nowrap">
+                            Thử nghiệm ngay &rarr;
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 4: ỨNG DỤNG THƯƠNG MẠI THỰC TẾ -->
+        <!-- ========================================================================= -->
+        <section class="space-y-8">
+            <div class="max-w-2xl space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-[#ffd60a]">
+                    ĐỊNH DẠNG THƯƠNG MẠI
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+                    Đáp Ứng Mọi Nhu Cầu Doanh Nghiệp.
+                </h2>
+                <p class="text-xs sm:text-sm text-[#86868b]">
+                    Tối ưu hóa sẵn từ ngữ kịch bản và góc máy phù hợp với từng nền tảng phát hành.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <div class="apple-bento p-6 space-y-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#2997ff] text-sm">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-white">TVC Quảng Cáo 15s - 30s</h3>
+                    <p class="text-xs text-[#86868b] leading-relaxed">
+                        Nhịp điệu nhanh, hình ảnh cận cảnh sản phẩm (Macro ECU), ánh sáng sang trọng và thông điệp chốt hạ định vị thương hiệu.
+                    </p>
+                </div>
+
+                <div class="apple-bento p-6 space-y-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#30d158] text-sm">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-white">TikTok & Reels Viral Ads</h3>
+                    <p class="text-xs text-[#86868b] leading-relaxed">
+                        Cấu trúc 3 giây đầu giữ chân người xem, tình huống đời thường chân thực và khéo léo lồng ghép sản phẩm để chốt đơn.
+                    </p>
+                </div>
+
+                <div class="apple-bento p-6 space-y-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#985eff] text-sm">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-white">Phim Doanh Nghiệp & Pitch Deck</h3>
+                    <p class="text-xs text-[#86868b] leading-relaxed">
+                        Tái hiện câu chuyện khởi nghiệp, quy mô cơ sở vật chất và tầm nhìn của nhà sáng lập để tạo lòng tin với nhà đầu tư.
+                    </p>
+                </div>
+
+                <div class="apple-bento p-6 space-y-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#ffd60a] text-sm">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-white">E-Commerce & Review Sản Phẩm</h3>
+                    <p class="text-xs text-[#86868b] leading-relaxed">
+                        Bóc tách chi tiết tính năng sử dụng (Hands-on & Unboxing), giải quyết nỗi đau của khách hàng và thúc đẩy hành động mua ngay.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 5: BẢNG GIÁ & BẢN QUYỀN (APPLE PRICING) -->
+        <!-- ========================================================================= -->
+        <section id="pricing" class="space-y-8 scroll-mt-24">
+            <div class="text-center max-w-2xl mx-auto space-y-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-[#2997ff]">
+                    BẢNG GIÁ DỊCH VỤ
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-bold tracking-tight text-white">
+                    Lựa Chọn Gói Phù Hợp.
+                </h2>
+                <p class="text-xs sm:text-sm text-[#86868b]">
+                    Từ học sinh rèn luyện hướng nghiệp đến doanh nghiệp sản xuất video quy mô lớn.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Gói 1: Hướng Nghiệp (Free) -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="text-xs font-semibold text-[#86868b] uppercase font-mono">Giáo Dục & Hướng Nghiệp</div>
+                        <h3 class="text-2xl font-bold text-white">Học Sinh / Sinh Viên</h3>
+                        <div class="text-3xl sm:text-4xl font-bold text-white font-mono">
+                            0 VNĐ <span class="text-xs text-[#86868b] font-normal">/ vĩnh viễn</span>
+                        </div>
+                        <p class="text-xs text-[#86868b] leading-relaxed">
+                            Dành cho các bạn trẻ học tập kỹ năng biên kịch, phân cảnh và nghiên cứu đề tài KHKT.
+                        </p>
+                        
+                        <ul class="space-y-2.5 text-xs text-[#f5f5f7] pt-4 border-t border-white/10">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> <b>500 Tokens miễn phí</b> khi khởi tạo</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Nhận thêm +100 Tokens mỗi ngày</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Truy cập Bản đồ nghề nghiệp</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Xuất Screenplay chuẩn JSON</li>
+                        </ul>
+                    </div>
+
+                    <a href="/storyboard" class="apple-btn-secondary w-full py-2.5 text-center text-xs font-semibold block">
+                        Bắt Đầu Miễn Phí
+                    </a>
+                </div>
+
+                <!-- Gói 2: Creator Pro (Featured) -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6 border-[#0071e3] bg-[#161617] relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#0071e3] text-white">
+                        Phổ Biến Cho Freelancer
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="text-xs font-semibold text-[#2997ff] uppercase font-mono">Bản Quyền Thương Mại</div>
+                        <h3 class="text-2xl font-bold text-white">Creator Pro</h3>
+                        <div class="text-3xl sm:text-4xl font-bold text-white font-mono">
+                            299.000 VNĐ <span class="text-xs text-[#86868b] font-normal">/ tháng</span>
+                        </div>
+                        <p class="text-xs text-[#86868b] leading-relaxed">
+                            Dành cho nhà sáng tạo nội dung, biên kịch tự do và người làm video quảng cáo cho nhãn hàng.
+                        </p>
+                        
+                        <ul class="space-y-2.5 text-xs text-[#f5f5f7] pt-4 border-t border-white/10">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#2997ff] text-[11px]"></i> <b>Không giới hạn</b> số lượt tạo Storyboard</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#2997ff] text-[11px]"></i> Bản quyền thương mại đầy đủ (No Watermark)</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#2997ff] text-[11px]"></i> Tải trọn bộ khung hình HD & Pitch Deck</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#2997ff] text-[11px]"></i> Đầy đủ preset TVC, TikTok Ads, E-com</li>
+                        </ul>
+                    </div>
+
+                    <button type="button" onclick="showClaimTokensModal()" class="apple-btn-primary w-full py-2.5 text-center text-xs font-semibold block cursor-pointer">
+                        Đăng Ký Gói Pro
+                    </button>
+                </div>
+
+                <!-- Gói 3: Enterprise Agency -->
+                <div class="apple-bento p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="text-xs font-semibold text-[#86868b] uppercase font-mono">Doanh Nghiệp & Agency</div>
+                        <h3 class="text-2xl font-bold text-white">Agency Studio</h3>
+                        <div class="text-3xl sm:text-4xl font-bold text-white font-mono">
+                            1.490.000 VNĐ <span class="text-xs text-[#86868b] font-normal">/ tháng</span>
+                        </div>
+                        <p class="text-xs text-[#86868b] leading-relaxed">
+                            Dành cho các Production House và Creative Agency cần bảo mật ý tưởng kịch bản tuyệt đối.
+                        </p>
+                        
+                        <ul class="space-y-2.5 text-xs text-[#f5f5f7] pt-4 border-t border-white/10">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Đa tài khoản cho cả nhóm sáng tạo</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Ký kết thỏa thuận bảo mật ý tưởng (NDA)</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Tùy biến Style nhân vật riêng của thương hiệu</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-[#30d158] text-[11px]"></i> Hỗ trợ kỹ thuật 24/7 từ đội ngũ tác giả</li>
+                        </ul>
+                    </div>
+
+                    <a href="/info" class="apple-btn-secondary w-full py-2.5 text-center text-xs font-semibold block">
+                        Liên Hệ Hợp Tác B2B
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN 6: BẢN QUYỀN TÁC GIẢ & NGHIÊN CỨU KHKT -->
+        <!-- ========================================================================= -->
+        <section class="apple-bento p-8 sm:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2 max-w-2xl">
+                <div class="text-xs font-mono text-[#2997ff] uppercase">Dự Án Nghiên Cứu KHKT JSB12</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-white">
+                    Bản Quyền Tác Giả: <span class="font-mono text-[#2997ff]">bigblyatcccp</span>
+                </h3>
+                <p class="text-xs sm:text-sm text-[#86868b] leading-relaxed">
+                    Công trình nghiên cứu ứng dụng trí tuệ nhân tạo Multi-Agentic nhằm giải quyết đồng thời hai bài toán cấp thiết: <b>Định hướng nghề nghiệp sáng tạo số cho thế hệ mới</b> và <b>Thương mại hóa quy trình sản xuất điện ảnh, truyền thông số</b>.
+                </p>
+            </div>
+
+            <div class="flex-shrink-0">
+                <a href="/info" class="apple-btn-secondary px-5 py-2.5 text-xs font-semibold inline-flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-[#2997ff]"></i> Đọc Bạch Thư Hệ Thống
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================================================= -->
+    <!-- APPLE MINIMALIST FOOTER -->
+    <!-- ========================================================================= -->
+    <footer class="mt-24 border-t border-white/[0.08] bg-[#161617] py-12 text-[#86868b] text-xs">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-xs">
+                
+                <div class="space-y-3">
+                    <h4 class="font-semibold text-white uppercase text-[11px] tracking-wider">HARNESS PRO</h4>
+                    <p class="text-[#86868b] text-xs leading-relaxed">
+                        Nền tảng Hướng nghiệp Sáng tạo số và Sản xuất Storyboard thương mại chuẩn công nghiệp.
+                    </p>
+                    <div class="font-mono text-[11px] text-[#f5f5f7]">
+                        Tác giả: <b>bigblyatcccp</b>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-white uppercase text-[11px] tracking-wider">Khám Phá</h4>
+                    <ul class="space-y-1.5 text-xs">
+                        <li><a href="/" class="hover:text-white transition">Trang Chủ</a></li>
+                        <li><a href="/storyboard" class="hover:text-white transition">Storyboard Studio</a></li>
+                        <li><a href="/chat" class="hover:text-white transition">Trợ Lý Hướng Nghiệp</a></li>
+                        <li><a href="/gallery" class="hover:text-white transition">Kho Portfolio</a></li>
+                        <li><a href="/info" class="hover:text-white transition">Bạch Thư & Báo Giá</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-white uppercase text-[11px] tracking-wider">Hướng Nghiệp</h4>
+                    <ul class="space-y-1.5 text-xs font-mono text-[#86868b]">
+                        <li><span>Biên Kịch Quảng Cáo TVC</span></li>
+                        <li><span>Đạo Diễn Hình Ảnh DoP</span></li>
+                        <li><span>Visual Storyboard Artist</span></li>
+                        <li><span>TikTok Video Marketer</span></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-white uppercase text-[11px] tracking-wider">Thương Mại</h4>
+                    <ul class="space-y-1.5 text-xs font-mono text-[#86868b]">
+                        <li><span>TVC Ads Screenplay Format</span></li>
+                        <li><span>Multi-Camera Setup (WS/MS/CU)</span></li>
+                        <li><span>Continuity Consistent AI</span></li>
+                        <li><span>Commercial Deck Export</span></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#86868b]">
+                <div>
+                    Copyright &copy; 2026 <b>HARNESS PRO</b>. Công trình dự thi KHKT JSB12 của tác giả <b class="text-[#f5f5f7]">bigblyatcccp</b>.
+                </div>
+                <div class="flex items-center gap-4">
+                    <span>Hướng Nghiệp Số</span>
+                    <span>•</span>
+                    <span>Thương Mại Hóa</span>
+                    <span>•</span>
+                    <span>All rights reserved</span>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script src="js/tokens.js"></script>
+    <script>
+        function updateRoiCalculation() {
+            const count = parseInt(document.getElementById('calc-video-count').value, 10) || 4;
+            document.getElementById('display-video-count').textContent = `${count} kịch bản`;
+
+            const traditionalCost = count * 15000000;
+            const harnessCost = 299000;
+            const savedMoney = Math.max(0, traditionalCost - harnessCost);
+            const savedDays = count * 8;
+
+            document.getElementById('calc-money-saved').textContent = (savedMoney / 1000000).toFixed(1) + " Triệu VNĐ";
+            document.getElementById('calc-time-saved').textContent = `${savedDays} ngày`;
+        }
+
+        function loadCareerPreset(roleKey) {
+            const presets = {
+                tvc_copywriter: "TVC Quảng cáo 30s giới thiệu dòng nước tăng lực thảo mộc tự nhiên, khởi đầu với cảnh vận động viên kiệt sức dưới trời nắng gắt và bùng nổ năng lượng khi mở nắp chai.",
+                dop_cinematographer: "Thiết lập phân cảnh góc máy điện ảnh kịch tính cho cuộc rượt đuổi xe mô tô trong hẻm mưa đêm rực sáng ánh đèn neon, sử dụng cỡ cảnh Close-up ánh mắt và Low-angle góc thấp bánh xe.",
+                storyboard_artist: "Bộ khung hình phân cảnh phim hoạt hình phiêu lưu về chú robot nhỏ thu gom hạt giống cuối cùng trên trái đất hoang tàn và tìm thấy mầm xanh trong hang động pha lê.",
+                viral_marketer: "Kịch bản video ngắn TikTok 45s review giải pháp máy lọc không khí thông minh, mở đầu bằng tình huống nghẹt thở vì khói bụi và chuyển sang cảm giác thư thái trong lành."
+            };
+
+            const prompt = presets[roleKey] || "";
+            if (prompt) {
+                sessionStorage.setItem("imported_chat_prompt", prompt);
+                window.location.href = "/storyboard";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRoiCalculation();
+        });
+    </script>
+</body>
+
+</html>
