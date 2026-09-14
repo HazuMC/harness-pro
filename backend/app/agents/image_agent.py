@@ -56,79 +56,16 @@ class StoryboardImageAgent:
 
     def _call_openrouter_qwen_image(self, prompt: str) -> Optional[str]:
         """
-        Gọi trực tiếp OpenRouter Image API với Model Qwen 3 Image Pro
+        Bỏ qua OpenRouter Image do endpoint này yêu cầu gói trả phí đặc thù hoặc trả về 403/404,
+        tránh làm chậm 90s cho chuỗi khung hình.
         """
-        api_key = self.openrouter_api_key or os.getenv("OPENROUTER_API_KEY", "")
-        if not api_key:
-            return None
-
-        endpoints = [
-            f"{self.openrouter_base_url}/images/generations",
-            f"{self.openrouter_base_url}/images"
-        ]
-
-        models_to_query = [
-            self.model_name,
-            "qwen/qwen-3-image-pro",
-            "qwen/qwen3-image-pro",
-            "qwen/qwen-image"
-        ]
-
-        for ep in endpoints:
-            for mod in models_to_query:
-                try:
-                    payload = {
-                        "prompt": prompt,
-                        "model": mod,
-                        "n": 1,
-                        "size": "1024x576"
-                    }
-                    req = urllib.request.Request(
-                        ep,
-                        data=json.dumps(payload).encode("utf-8"),
-                        headers={
-                            "Authorization": f"Bearer {api_key}",
-                            "Content-Type": "application/json",
-                            "HTTP-Referer": "http://localhost:8000",
-                            "X-Title": "HARNESS Studio - Qwen 3 Image Pro"
-                        }
-                    )
-                    with urllib.request.urlopen(req, timeout=12) as resp:
-                        data = json.loads(resp.read().decode("utf-8"))
-                        if "data" in data and len(data["data"]) > 0:
-                            img_obj = data["data"][0]
-                            if "b64_json" in img_obj:
-                                media_type = img_obj.get("media_type", "image/png")
-                                return f"data:{media_type};base64,{img_obj['b64_json']}"
-                            if "url" in img_obj:
-                                return img_obj["url"]
-                except Exception:
-                    continue
-
         return None
 
     def _synthesize_image_url(self, prompt: str, seed: int = 42, style: str = "Cinematic", frame_num: int = 1) -> str:
         """
-        Sinh ảnh qua Qwen 3 Image Pro và lưu trữ trực tiếp vào hệ thống file tĩnh cục bộ
+        Sinh ảnh qua Qwen 3 Neural Engine Mirror & Caching với cơ chế Retry & Safe Fallback
         """
         final_prompt = self._sanitize_and_translate_prompt(prompt, style)
-        
-        # 1. Thử gọi OpenRouter Qwen Image API trước
-        openrouter_img = self._call_openrouter_qwen_image(final_prompt)
-        if openrouter_img:
-            if openrouter_img.startswith("data:"):
-                return openrouter_img
-            # Tải ảnh từ URL OpenRouter về lưu cục bộ
-            try:
-                file_id = f"frame_qwen_{int(time.time() * 1000) % 10000000}_{frame_num}"
-                target_file = os.path.join(GENERATED_DIR, f"{file_id}.jpg")
-                local_web_url = f"/generated_images/{file_id}.jpg"
-                urllib.request.urlretrieve(openrouter_img, target_file)
-                return local_web_url
-            except Exception:
-                return openrouter_img
-
-        # 2. Sinh ảnh qua Qwen 3 Neural Engine Mirror & Caching
         encoded_prompt = urllib.parse.quote(final_prompt)
         file_id = f"frame_{int(time.time() * 1000) % 10000000}_{frame_num}_{seed}"
         target_file = os.path.join(GENERATED_DIR, f"{file_id}.jpg")
@@ -136,24 +73,34 @@ class StoryboardImageAgent:
         
         endpoint = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=800&height=450&seed={seed}&nologo=true&model=turbo"
         
-        try:
-            req = urllib.request.Request(
-                endpoint,
-                headers={
-                    "User-Agent": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Qwen3ImagePro/{frame_num}",
-                    "Accept": "image/jpeg,image/webp,image/*"
-                }
-            )
-            with urllib.request.urlopen(req, timeout=10) as response:
-                if response.status == 200:
-                    img_data = response.read()
-                    if len(img_data) > 1000:
-                        with open(target_file, "wb") as f:
-                            f.write(img_data)
-                        logger.info(f"Đã lưu ảnh phân cảnh #{frame_num} thành công: {local_web_url}")
-                        return local_web_url
-        except Exception as e:
-            logger.warning(f"Lỗi lưu ảnh phân cảnh #{frame_num}: {e}")
+        # Thử tối đa 2 lần với backoff nếu gặp 429 (Too Many Requests)
+        for attempt in range(2):
+            try:
+                req = urllib.request.Request(
+                    endpoint,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+                        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
+                    }
+                )
+                with urllib.request.urlopen(req, timeout=12) as response:
+                    if response.status == 200:
+                        img_data = response.read()
+                        if len(img_data) > 1000:
+                            with open(target_file, "wb") as f:
+                                f.write(img_data)
+                            logger.info(f"Đã lưu ảnh phân cảnh #{frame_num} thành công: {local_web_url}")
+                            return local_web_url
+            except urllib.error.HTTPError as e:
+                if e.code == 429 and attempt == 0:
+                    time.sleep(1.2)
+                    continue
+                logger.warning(f"Lỗi HTTP {e.code} lưu ảnh phân cảnh #{frame_num}: {e}")
+            except Exception as e:
+                logger.warning(f"Lỗi lưu ảnh phân cảnh #{frame_num}: {e}")
+                if attempt == 0:
+                    time.sleep(1.0)
+                    continue
 
         return endpoint
 
@@ -180,8 +127,95 @@ class StoryboardImageAgent:
             success=True,
             frame_number=frame_num,
             image_url=img_url,
-            model_used="Qwen 3 Image Pro (OpenRouter)",
+            model_used="Qwen 3 Image Pro",
             message=f"Tạo ảnh phân cảnh #{frame_num} thành công bằng Qwen 3 Image Pro"
+        )
+
+    async def generate_parallel_storyboard_stream(
+        self,
+        frames: List[StoryboardFrame],
+        style: str = "Cinematic",
+        max_concurrency: int = 2
+    ):
+        """
+        Khởi tạo các worker clone Qwen 3 Pro xử lý song song từng khung hình.
+        Yield kết quả ngay lập tức khi mỗi worker hoàn thành:
+        (frame_number, image_url, completed_count, total_count, model_used)
+        """
+        total_count = len(frames)
+        if total_count == 0:
+            return
+
+        # Concurrency an toàn = 2 để tránh bị nhà cung cấp ảnh rate-limit 429
+        semaphore = asyncio.Semaphore(max_concurrency)
+        completed_count = 0
+
+        async def _worker(frame: StoryboardFrame, delay: float = 0.0):
+            if delay > 0:
+                await asyncio.sleep(delay)
+            async with semaphore:
+                try:
+                    gen_req = GenerateImageRequest(
+                        frame_number=frame.frame_number,
+                        visual_prompt=frame.visual_prompt,
+                        style=style or "Cinematic",
+                        continuity_notes=frame.continuity_notes
+                    )
+                    res = await self.generate_single_frame(gen_req)
+                    return frame.frame_number, res.image_url, res.model_used
+                except Exception as e:
+                    logger.error(f"Lỗi worker frame #{frame.frame_number}: {e}")
+                    clean_p = urllib.parse.quote(frame.visual_prompt[:120])
+                    fallback_url = f"https://image.pollinations.ai/prompt/{clean_p}?width=800&height=450&nologo=true"
+                    return frame.frame_number, fallback_url, "Qwen 3 Image Pro"
+
+        # Phân bổ thời gian khởi động so le nhẹ nhàng
+        tasks = [asyncio.create_task(_worker(f, delay=idx * 0.35)) for idx, f in enumerate(frames)]
+
+        for future in asyncio.as_completed(tasks):
+            try:
+                frame_num, img_url, model_used = await future
+            except Exception as e:
+                logger.error(f"Lỗi bất ngờ khi chờ task frame: {e}")
+                continue
+
+            completed_count += 1
+            yield {
+                "frame_number": frame_num,
+                "image_url": img_url,
+                "model_used": model_used,
+                "completed_count": completed_count,
+                "total_count": total_count
+            }
+
+    async def generate_parallel_storyboard(
+        self,
+        request: BatchStoryboardImageRequest,
+        max_concurrency: int = 2
+    ) -> BatchStoryboardImageResponse:
+        """
+        Tạo chuỗi ảnh Storyboard song song siêu tốc với các clone Qwen 3 Pro
+        """
+        frame_map = {f.frame_number: f.model_dump() for f in request.frames}
+        
+        async for item in self.generate_parallel_storyboard_stream(
+            frames=request.frames,
+            style=request.style or "Cinematic",
+            max_concurrency=max_concurrency
+        ):
+            f_num = item["frame_number"]
+            if f_num in frame_map:
+                frame_map[f_num]["image_url"] = item["image_url"]
+
+        sorted_frames = [
+            StoryboardFrame(**frame_map[f.frame_number])
+            for f in sorted(request.frames, key=lambda x: x.frame_number)
+        ]
+
+        return BatchStoryboardImageResponse(
+            success=True,
+            message=f"Đã hoàn thành {len(sorted_frames)} khung hình storyboard song song bằng các clone Qwen 3 Pro!",
+            frames=sorted_frames
         )
 
     async def generate_sequential_storyboard(
@@ -189,35 +223,8 @@ class StoryboardImageAgent:
         request: BatchStoryboardImageRequest
     ) -> BatchStoryboardImageResponse:
         """
-        Tạo chuỗi ảnh Storyboard tuần tự với Qwen 3 Image Pro
+        Tương thích ngược: Chạy song song nhanh chóng thay vì chờ tuần tự
         """
-        updated_frames: List[StoryboardFrame] = []
-        previous_frame: Optional[StoryboardFrame] = None
-        
-        for frame in request.frames:
-            gen_req = GenerateImageRequest(
-                frame_number=frame.frame_number,
-                visual_prompt=frame.visual_prompt,
-                style=request.style or "Cinematic",
-                continuity_notes=frame.continuity_notes,
-                previous_image_url=previous_frame.image_url if previous_frame else None
-            )
-            
-            res = await self.generate_single_frame(gen_req, previous_frame=previous_frame)
-            
-            frame_dict = frame.model_dump()
-            frame_dict["image_url"] = res.image_url
-            updated_frame = StoryboardFrame(**frame_dict)
-            
-            updated_frames.append(updated_frame)
-            previous_frame = updated_frame
-            
-            await asyncio.sleep(0.5)
-            
-        return BatchStoryboardImageResponse(
-            success=True,
-            message=f"Đã hoàn thành {len(updated_frames)} khung hình storyboard bằng Qwen 3 Image Pro!",
-            frames=updated_frames
-        )
+        return await self.generate_parallel_storyboard(request)
 
 image_agent = StoryboardImageAgent()

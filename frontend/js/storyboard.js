@@ -67,7 +67,7 @@ function bindStudioEvents() {
     }
 }
 
-// CHẠY TỰ ĐỘNG TOÀN BỘ 3 BƯỚC KHI NHẤN NÚT "TẠO"
+// CHẠY TỰ ĐỘNG TOÀN BỘ 3 BƯỚC THEO CƠ CHẾ STREAMING ĐA WORKER CLONE QWEN 3 PRO
 async function handleRunFullAutoPipeline() {
     const prompt = document.getElementById("sb-story-prompt")?.value.trim();
     const storyType = document.getElementById("sb-story-type")?.value || "short";
@@ -97,17 +97,16 @@ async function handleRunFullAutoPipeline() {
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang Tạo Storyboard...`;
     }
 
-    setLoading(true, "Hệ thống đang tự động xử lý 3 giai đoạn...", "Đang phân bổ kịch bản, bóc tách góc máy và kết xuất chuỗi hình ảnh...");
+    setLoading(true, "Khởi động Multi-Agent Pipeline...", "Đang kết nối Đạo Diễn, Bóc Tách Phân Cảnh và các clone Qwen 3 Pro...");
     updateStepIndicators(1);
-    simulateLoadingSteps();
 
-    // 2. Khởi chạy Mini Game giải trí trong lúc chờ
+    // Khởi chạy Mini Game giải trí
     if (typeof startWaitingMiniGame === "function") {
         startWaitingMiniGame();
     }
 
     try {
-        const res = await fetch("/api/pipeline/full", {
+        const response = await fetch("/api/pipeline/stream", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -118,36 +117,52 @@ async function handleRunFullAutoPipeline() {
             })
         });
 
-        if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            throw new Error(errData.detail || "Lỗi trong quá trình tạo Storyboard");
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.detail || `Lỗi máy chủ (${response.status})`);
         }
 
-        const data = await res.json();
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let buffer = "";
 
-        studioState.directorOutput = data.director_output;
-        studioState.breakdownOutput = data.breakdown_output;
-        studioState.frames = data.frames || [];
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-        // Kiểm tra và tải trước toàn bộ hình ảnh vào bộ nhớ trước khi hiển thị
-        setLoading(true, "Đang kiểm tra và tải toàn bộ hình ảnh...", "Đảm bảo 100% các phân cảnh đã sinh ảnh hoàn chỉnh...");
-        await preloadAllStoryboardImages(studioState.frames);
+            buffer += decoder.decode(value, { stream: true });
+            const messages = buffer.split("\n\n");
+            buffer = messages.pop() || ""; // Giữ lại phần chưa hoàn chỉnh
 
-        updateStepIndicators(3);
-        renderFrames(studioState.frames);
-        showToast("Đã tạo và nạp thành công toàn bộ hình ảnh Storyboard!", "success");
+            for (const rawMsg of messages) {
+                if (!rawMsg.trim()) continue;
+                parseAndHandleSSE(rawMsg);
+            }
+        }
 
-        // Cuộn nhẹ tới kết quả
-        document.getElementById("sb-results-container")?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (buffer.trim()) {
+            parseAndHandleSSE(buffer);
+        }
 
     } catch (err) {
-        console.error("Lỗi full pipeline:", err);
+        console.error("Lỗi full streaming pipeline:", err);
         showToast(err.message || "Xảy ra lỗi khi tạo Storyboard", "error");
     } finally {
         if (typeof stopWaitingMiniGame === "function") {
             stopWaitingMiniGame();
         }
         setLoading(false);
+        if (studioState.frames) {
+            studioState.frames.forEach(f => {
+                if (f.is_rendering) {
+                    f.is_rendering = false;
+                    const slot = document.getElementById(`frame-img-slot-${f.frame_number}`);
+                    if (slot && !f.image_url) {
+                        slot.innerHTML = renderFrameImageSlot(f);
+                    }
+                }
+            });
+        }
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-amber-300 mr-2"></i> <span>Tạo Storyboard</span>`;
@@ -155,26 +170,263 @@ async function handleRunFullAutoPipeline() {
     }
 }
 
-function simulateLoadingSteps() {
+// Bóc tách gói tin SSE và điều phối Event
+function parseAndHandleSSE(rawMsg) {
+    const lines = rawMsg.split("\n");
+    let eventName = "message";
+    let dataStr = "";
+
+    for (const line of lines) {
+        if (line.startsWith("event:")) {
+            eventName = line.substring(6).trim();
+        } else if (line.startsWith("data:")) {
+            dataStr = line.substring(5).trim();
+        }
+    }
+
+    if (!dataStr) return;
+
+    try {
+        const data = JSON.parse(dataStr);
+        handleStreamEvent(eventName, data);
+    } catch (e) {
+        console.warn("Lỗi parse SSE JSON:", e, dataStr);
+    }
+}
+
+// Xử lý từng Event nhận từ Backend theo thời gian thực
+function handleStreamEvent(eventName, data) {
+    switch (eventName) {
+        case "step":
+            handleStepEvent(data);
+            break;
+
+        case "director_complete":
+            studioState.directorOutput = data;
+            break;
+
+        case "breakdown_complete":
+            handleBreakdownComplete(data);
+            break;
+
+        case "frame_ready":
+            handleFrameReady(data);
+            break;
+
+        case "complete":
+            handlePipelineComplete(data);
+            break;
+
+        case "error":
+            showToast(data.detail || "Có lỗi trong quá trình xử lý!", "error");
+            setLoading(false);
+            if (studioState.frames) {
+                studioState.frames.forEach(f => {
+                    if (f.is_rendering) {
+                        f.is_rendering = false;
+                        const slot = document.getElementById(`frame-img-slot-${f.frame_number}`);
+                        if (slot && !f.image_url) {
+                            slot.innerHTML = renderFrameImageSlot(f);
+                        }
+                    }
+                });
+            }
+            break;
+
+        default:
+            break;
+    }
+}
+
+function handleStepEvent(data) {
+    const stepNum = data.step || 1;
+    updateStepIndicators(stepNum);
+
     const step1 = document.getElementById("sb-prog-step-1");
     const step2 = document.getElementById("sb-prog-step-2");
     const step3 = document.getElementById("sb-prog-step-3");
 
-    if (step1) step1.className = "flex items-center gap-2 text-black text-xs font-semibold animate-pulse";
-    if (step2) step2.className = "flex items-center gap-2 text-zinc-400 text-xs";
-    if (step3) step3.className = "flex items-center gap-2 text-zinc-400 text-xs";
+    if (stepNum === 1) {
+        if (step1) step1.className = "flex items-center gap-2 text-white text-xs font-semibold animate-pulse";
+        if (step2) step2.className = "flex items-center gap-2 text-[#6e6e73] text-xs";
+        if (step3) step3.className = "flex items-center gap-2 text-[#6e6e73] text-xs";
+        setLoading(true, "Giai đoạn 1: Đạo diễn kịch bản", data.message || "Đang thiết lập cấu trúc và hồi truyện...");
+    } else if (stepNum === 2) {
+        if (step1) step1.className = "flex items-center gap-2 text-[#30d158] text-xs font-semibold";
+        if (step2) step2.className = "flex items-center gap-2 text-white text-xs font-semibold animate-pulse";
+        if (step3) step3.className = "flex items-center gap-2 text-[#6e6e73] text-xs";
+        setLoading(true, "Giai đoạn 2: Bóc tách góc máy & Cỡ cảnh", data.message || "Đang chia khung hình và tính nhất quán...");
+    } else if (stepNum === 3) {
+        if (step1) step1.className = "flex items-center gap-2 text-[#30d158] text-xs font-semibold";
+        if (step2) step2.className = "flex items-center gap-2 text-[#30d158] text-xs font-semibold";
+        if (step3) step3.className = "flex items-center gap-2 text-white text-xs font-semibold animate-pulse";
+        setLoading(true, "Giai đoạn 3: Khởi chạy các clone Qwen 3 Pro", data.message || "Đang render đồng thời tất cả các khung hình...");
+    }
+}
 
-    setTimeout(() => {
-        updateStepIndicators(2);
-        if (step1) step1.className = "flex items-center gap-2 text-emerald-600 text-xs font-semibold";
-        if (step2) step2.className = "flex items-center gap-2 text-black text-xs font-semibold animate-pulse";
-    }, 2000);
+function handleBreakdownComplete(data) {
+    studioState.directorOutput = data.director;
+    studioState.breakdownOutput = data.breakdown;
+    
+    // Đánh dấu toàn bộ frames là đang chờ render song song
+    studioState.frames = (data.frames || []).map(f => ({
+        ...f,
+        is_rendering: true,
+        image_url: null
+    }));
 
-    setTimeout(() => {
-        updateStepIndicators(3);
-        if (step2) step2.className = "flex items-center gap-2 text-emerald-600 text-xs font-semibold";
-        if (step3) step3.className = "flex items-center gap-2 text-black text-xs font-semibold animate-pulse";
-    }, 4500);
+    // Hiển thị ngay toàn bộ dàn khung hình lên màn hình
+    renderFrames(studioState.frames);
+
+    // Kích hoạt badge tiến độ streaming song song
+    const streamBadge = document.getElementById("sb-res-badge-streaming");
+    const streamCount = document.getElementById("sb-streaming-count");
+    if (streamBadge) streamBadge.classList.remove("hidden");
+    if (streamCount) streamCount.textContent = `Song song: 0/${studioState.frames.length} khung`;
+
+    // Cuộn nhẹ tới vùng kết quả
+    document.getElementById("sb-results-container")?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast(`Đã bóc tách xong ${studioState.frames.length} khung hình! Đang khởi động các clone Qwen 3 Pro song song...`, "info");
+}
+
+function handleFrameReady(data) {
+    // data: { frame_number, image_url, model_used, completed_count, total_count }
+    const fNum = data.frame_number;
+    const targetFrame = studioState.frames.find(f => f.frame_number === fNum);
+    if (targetFrame) {
+        targetFrame.image_url = data.image_url;
+        targetFrame.is_rendering = false;
+        targetFrame.model_used = data.model_used;
+    }
+
+    // Cập nhật slot ảnh trực tiếp trên DOM với hiệu ứng mượt mà
+    updateSingleFrameDomSlot(fNum, data.image_url);
+
+    // Cập nhật số lượng hoàn thành
+    const streamCount = document.getElementById("sb-streaming-count");
+    if (streamCount) {
+        streamCount.textContent = `Đã vẽ: ${data.completed_count}/${data.total_count} khung`;
+    }
+
+    const descEl = document.getElementById("sb-loading-desc");
+    if (descEl) {
+        descEl.textContent = `Các clone Qwen 3 Pro đã hoàn thành ${data.completed_count}/${data.total_count} khung hình...`;
+    }
+}
+
+function handlePipelineComplete(data) {
+    if (data.frames && data.frames.length > 0) {
+        studioState.frames = data.frames.map(f => ({
+            ...f,
+            is_rendering: false
+        }));
+    }
+
+    updateStepIndicators(3);
+    setLoading(false);
+    if (typeof stopWaitingMiniGame === "function") {
+        stopWaitingMiniGame();
+    }
+
+    const streamBadge = document.getElementById("sb-res-badge-streaming");
+    const streamCount = document.getElementById("sb-streaming-count");
+    if (streamBadge) streamBadge.classList.remove("hidden");
+    if (streamCount) {
+        streamCount.innerHTML = `<i class="fa-solid fa-circle-check text-[#30d158] mr-1"></i> Hoàn thành 100%`;
+    }
+
+    // Đảm bảo tất cả frame hiển thị đúng
+    studioState.frames.forEach(f => {
+        if (f.image_url) {
+            updateSingleFrameDomSlot(f.frame_number, f.image_url);
+        }
+    });
+
+    showToast("Toàn bộ chuỗi ảnh Storyboard đã hoàn tất siêu tốc bằng các clone Qwen 3 Pro!", "success");
+}
+
+// Cập nhật DOM của 1 khung hình riêng lẻ ngay lập tức mà không render lại cả trang
+function updateSingleFrameDomSlot(frameNumber, imageUrl) {
+    const slot = document.getElementById(`frame-img-slot-${frameNumber}`);
+    if (slot) {
+        slot.innerHTML = `
+            <div class="relative group aspect-video rounded-2xl overflow-hidden bg-black border border-white/10 shadow-sm transition-all duration-500 animate-appleFadeIn">
+                <img src="${imageUrl}" alt="Khung ${frameNumber}"
+                    class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    onerror="handleStoryboardImageError(this, ${frameNumber})" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3 justify-between">
+                    <span class="text-[10px] text-white font-mono bg-black/80 px-2 py-0.5 rounded border border-white/20">Khung #${frameNumber}</span>
+                    <a href="${imageUrl}" target="_blank" download="frame_${frameNumber}.png" class="text-xs text-white bg-white/20 hover:bg-white/40 p-1.5 rounded-lg transition" title="Tải ảnh">
+                        <i class="fa-solid fa-expand"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+
+    // Cập nhật nút vẽ lại ở header của frame
+    const actionSlot = document.getElementById(`frame-action-btn-${frameNumber}`);
+    if (actionSlot) {
+        actionSlot.innerHTML = `
+            <button type="button" onclick="generateSingleFrameImage(${frameNumber})" id="btn-gen-img-${frameNumber}"
+                class="text-xs px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition flex items-center gap-1 font-medium cursor-pointer">
+                <i class="fa-solid fa-rotate-right text-[10px]"></i> Vẽ lại
+            </button>
+        `;
+    }
+}
+
+// Trả về HTML cho slot ảnh (Có 3 trạng thái: Đã có ảnh / Đang vẽ song song / Chưa có)
+function renderFrameImageSlot(frame) {
+    const hasImage = frame.image_url && frame.image_url.length > 5;
+    
+    if (hasImage) {
+        return `
+            <div class="relative group aspect-video rounded-2xl overflow-hidden bg-black border border-white/10 shadow-sm transition-all duration-500">
+                <img src="${frame.image_url}" alt="Khung ${frame.frame_number}"
+                    class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    onerror="handleStoryboardImageError(this, ${frame.frame_number})" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3 justify-between">
+                    <span class="text-[10px] text-white font-mono bg-black/80 px-2 py-0.5 rounded border border-white/20">Khung #${frame.frame_number}</span>
+                    <a href="${frame.image_url}" target="_blank" download="frame_${frame.frame_number}.png" class="text-xs text-white bg-white/20 hover:bg-white/40 p-1.5 rounded-lg transition" title="Tải ảnh">
+                        <i class="fa-solid fa-expand"></i>
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+
+    if (frame.is_rendering) {
+        return `
+            <div class="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-[#1c1c1e] to-[#0d0d10] border border-indigo-500/30 flex flex-col items-center justify-center text-center p-4 shadow-inner">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/10 to-transparent animate-pulse"></div>
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center mb-2.5 shadow-lg shadow-indigo-500/20">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-sm animate-spin"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-white tracking-wide flex items-center gap-1.5">
+                        Clone Qwen 3 Pro #${frame.frame_number}
+                    </span>
+                    <span class="text-[11px] font-mono text-indigo-300/80 mt-1 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping"></span> Đang kết xuất song song...
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="aspect-video rounded-2xl bg-[#1d1d1f] border border-dashed border-white/15 flex flex-col items-center justify-center text-center p-4">
+            <i class="fa-solid fa-image text-[#6e6e73] text-3xl mb-2"></i>
+            <span class="text-xs text-[#86868b] font-medium">Chưa có hình ảnh</span>
+            <button type="button" onclick="generateSingleFrameImage(${frame.frame_number})" id="btn-gen-img-${frame.frame_number}"
+                class="mt-3 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/15 transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-paintbrush text-[10px] text-[#2997ff]"></i> Tạo ảnh phân cảnh
+            </button>
+        </div>
+    `;
 }
 
 // HÀM KIỂM TRA VÀ TẢI TOÀN BỘ ẢNH TRƯỚC KHI HIỂN THỊ
@@ -228,7 +480,7 @@ window.generateSingleFrameImage = async function(frameNumber) {
         const data = await res.json();
 
         frame.image_url = data.image_url;
-        renderFrames(studioState.frames);
+        updateSingleFrameDomSlot(frameNumber, data.image_url);
         showToast(`Đã tạo lại ảnh cho Khung #${frameNumber}!`, "success");
     } catch (err) {
         showToast(err.message, "error");
@@ -240,7 +492,7 @@ window.generateSingleFrameImage = async function(frameNumber) {
     }
 };
 
-// RENDER GIAO DIỆN KHUNG HÌNH STORYBOARD (HOÀN TOÀN ẨN PHẦN PROMPT)
+// RENDER GIAO DIỆN KHUNG HÌNH STORYBOARD
 function renderFrames(frames) {
     const emptyState = document.getElementById("sb-empty-state");
     const resultsContainer = document.getElementById("sb-results-container");
@@ -258,32 +510,10 @@ function renderFrames(frames) {
 
     framesGrid.innerHTML = frames.map((frame) => {
         const hasImage = frame.image_url && frame.image_url.length > 5;
-        const imageContent = hasImage ? `
-            <div class="relative group aspect-video rounded-2xl overflow-hidden bg-black border border-white/10 shadow-sm">
-                <img src="${frame.image_url}" alt="Khung ${frame.frame_number}"
-                    class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                    loading="lazy"
-                    onerror="handleStoryboardImageError(this, ${frame.frame_number})" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3 justify-between">
-                    <span class="text-[10px] text-white font-mono bg-black/80 px-2 py-0.5 rounded border border-white/20">Khung #${frame.frame_number}</span>
-                    <a href="${frame.image_url}" target="_blank" download="frame_${frame.frame_number}.png" class="text-xs text-white bg-white/20 hover:bg-white/40 p-1.5 rounded-lg transition" title="Tải ảnh">
-                        <i class="fa-solid fa-expand"></i>
-                    </a>
-                </div>
-            </div>
-        ` : `
-            <div class="aspect-video rounded-2xl bg-[#1d1d1f] border border-dashed border-white/15 flex flex-col items-center justify-center text-center p-4">
-                <i class="fa-solid fa-image text-[#6e6e73] text-3xl mb-2"></i>
-                <span class="text-xs text-[#86868b] font-medium">Chưa có hình ảnh</span>
-                <button type="button" onclick="generateSingleFrameImage(${frame.frame_number})" id="btn-gen-img-${frame.frame_number}"
-                    class="mt-3 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/15 transition flex items-center gap-1.5 cursor-pointer">
-                    <i class="fa-solid fa-paintbrush text-[10px] text-[#2997ff]"></i> Tạo ảnh phân cảnh
-                </button>
-            </div>
-        `;
+        const imageContent = renderFrameImageSlot(frame);
 
         return `
-            <div class="apple-bento p-6 space-y-4">
+            <div class="apple-bento p-6 space-y-4" id="frame-card-${frame.frame_number}">
                 
                 <!-- Frame Header -->
                 <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/[0.08]">
@@ -299,12 +529,14 @@ function renderFrames(frames) {
 
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] px-2.5 py-1 rounded-full bg-white/[0.06] text-[#f5f5f7] font-mono border border-white/10">Góc: ${escapeHtml(frame.camera_angle || 'Eye-level')}</span>
-                        ${hasImage ? `
-                            <button type="button" onclick="generateSingleFrameImage(${frame.frame_number})" id="btn-gen-img-${frame.frame_number}"
-                                class="text-xs px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition flex items-center gap-1 font-medium cursor-pointer">
-                                <i class="fa-solid fa-rotate-right text-[10px]"></i> Vẽ lại
-                            </button>
-                        ` : ''}
+                        <div id="frame-action-btn-${frame.frame_number}">
+                            ${hasImage ? `
+                                <button type="button" onclick="generateSingleFrameImage(${frame.frame_number})" id="btn-gen-img-${frame.frame_number}"
+                                    class="text-xs px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/10 transition flex items-center gap-1 font-medium cursor-pointer">
+                                    <i class="fa-solid fa-rotate-right text-[10px]"></i> Vẽ lại
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
                 </div>
 
@@ -312,7 +544,7 @@ function renderFrames(frames) {
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     
                     <!-- Image Preview (5 Cols) -->
-                    <div class="md:col-span-5">
+                    <div class="md:col-span-5" id="frame-img-slot-${frame.frame_number}">
                         ${imageContent}
                     </div>
 
@@ -349,6 +581,7 @@ function renderFrames(frames) {
         `;
     }).join("");
 }
+
 
 // Helpers
 function updateStepIndicators(activeStep) {
@@ -474,8 +707,8 @@ function showToast(msg, type = "info") {
 }
 
 function escapeHtml(str) {
-    if (!str) return "";
-    return str
+    if (str === null || str === undefined) return "";
+    return String(str)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")

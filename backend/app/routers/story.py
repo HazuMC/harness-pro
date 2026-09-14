@@ -1,5 +1,7 @@
+import json
 import logging
 from fastapi import APIRouter, HTTPException, status
+from fastapi.responses import StreamingResponse
 from app.models.schemas import (
     StoryRequest,
     StoryResponse,
@@ -57,6 +59,7 @@ async def make_story(request: StoryRequest):
 
 
 # ================= 2. MODEL 2: CHIA NHỎ PHÂN CẢNH (DEEPSEEK SCENE AGENT) =================
+@router.post("/breakdown-scenes", response_model=SceneBreakdownResponse)
 @router.post("/api/breakdown-scenes", response_model=SceneBreakdownResponse)
 async def breakdown_scenes(request: SceneBreakdownRequest):
     """
@@ -81,6 +84,7 @@ async def breakdown_scenes(request: SceneBreakdownRequest):
 
 
 # ================= 3. MODEL 3: TẠO ẢNH STORYBOARD (QWEN 3 PRO / OPENROUTER) =================
+@router.post("/generate-frame-image", response_model=GenerateImageResponse)
 @router.post("/api/generate-frame-image", response_model=GenerateImageResponse)
 async def generate_single_frame_image(request: GenerateImageRequest):
     """
@@ -97,6 +101,7 @@ async def generate_single_frame_image(request: GenerateImageRequest):
         )
 
 
+@router.post("/generate-storyboard-images", response_model=BatchStoryboardImageResponse)
 @router.post("/api/generate-storyboard-images", response_model=BatchStoryboardImageResponse)
 async def generate_storyboard_images(request: BatchStoryboardImageRequest):
     """
@@ -115,6 +120,7 @@ async def generate_storyboard_images(request: BatchStoryboardImageRequest):
 
 
 # ================= 4. FULL PIPELINE: TOÀN BỘ CHU TRÌNH 3 MODEL =================
+@router.post("/pipeline/full", response_model=FullPipelineResponse)
 @router.post("/api/pipeline/full", response_model=FullPipelineResponse)
 async def run_full_pipeline(request: FullPipelineRequest):
     """
@@ -162,3 +168,78 @@ async def run_full_pipeline(request: FullPipelineRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Lỗi trong chu trình Multi-Agent: {str(e)}"
         )
+
+
+# ================= 5. STREAMING PIPELINE: SSE REAL-TIME CLONE WORKERS =================
+@router.post("/pipeline/stream")
+@router.post("/api/pipeline/stream")
+async def stream_full_pipeline(request: FullPipelineRequest):
+    """
+    Chạy tự động toàn bộ 3 Model Agentic theo dạng Streaming (SSE - Server-Sent Events):
+    1. Model 1 (Đạo Diễn) -> Stream kịch bản
+    2. Model 2 (DeepSeek) -> Stream bóc tách góc máy (Frontend render ngay dàn khung)
+    3. Model 3 (Nhiều clone Qwen 3 Pro song song) -> Stream ảnh từng khung ngay khi render xong
+    """
+    async def event_generator():
+        try:
+            # 1. Báo bắt đầu Model 1
+            yield f"event: step\ndata: {json.dumps({'step': 1, 'title': 'Đạo diễn kịch bản', 'message': 'Đang phân bổ kịch bản và hồi truyện...'}, ensure_ascii=False)}\n\n"
+            
+            story_req = StoryRequest(
+                story=request.story,
+                story_type=request.story_type,
+                style=request.style
+            )
+            director_out = await director_agent.generate_story_plan(story_req)
+            yield f"event: director_complete\ndata: {json.dumps(director_out.model_dump(), ensure_ascii=False)}\n\n"
+
+            # 2. Báo bắt đầu Model 2
+            yield f"event: step\ndata: {json.dumps({'step': 2, 'title': 'Bóc tách góc máy', 'message': 'Đang chia khung hình, cỡ cảnh và tính nhất quán...'}, ensure_ascii=False)}\n\n"
+            
+            breakdown_req = SceneBreakdownRequest(
+                story_plan=director_out,
+                style=request.style
+            )
+            breakdown_out = await scene_agent.breakdown_scenes(breakdown_req)
+            
+            # Gửi dàn khung hình ban đầu về để Frontend vẽ trước cấu trúc
+            yield f"event: breakdown_complete\ndata: {json.dumps({'director': director_out.model_dump(), 'breakdown': breakdown_out.model_dump(), 'frames': [f.model_dump() for f in breakdown_out.frames]}, ensure_ascii=False)}\n\n"
+
+            final_frames = [f.model_dump() for f in breakdown_out.frames]
+
+            # 3. Model 3: Chạy song song nhiều clone Qwen 3 Pro
+            if request.generate_images and len(breakdown_out.frames) > 0:
+                total_frames = len(breakdown_out.frames)
+                yield f"event: step\ndata: {json.dumps({'step': 3, 'title': 'Khởi động các clone Qwen 3 Pro', 'message': f'Đang kích hoạt đồng thời {total_frames} worker clone Qwen 3 Pro vẽ song song...', 'total_frames': total_frames}, ensure_ascii=False)}\n\n"
+
+                async for frame_update in image_agent.generate_parallel_storyboard_stream(
+                    frames=breakdown_out.frames,
+                    style=request.style or "Cinematic",
+                    max_concurrency=2
+                ):
+                    # Cập nhật kết quả vào danh sách lưu trữ
+                    f_num = frame_update["frame_number"]
+                    for f in final_frames:
+                        if f["frame_number"] == f_num:
+                            f["image_url"] = frame_update["image_url"]
+                            break
+                    
+                    # Bắn event frame_ready về Client ngay khi worker này vẽ xong
+                    yield f"event: frame_ready\ndata: {json.dumps(frame_update, ensure_ascii=False)}\n\n"
+
+            # 4. Gửi event hoàn tất
+            yield f"event: complete\ndata: {json.dumps({'message': 'Hoàn thành toàn bộ Storyboard!', 'frames': final_frames, 'director_output': director_out.model_dump(), 'breakdown_output': breakdown_out.model_dump()}, ensure_ascii=False)}\n\n"
+
+        except Exception as e:
+            logger.error(f"Lỗi trong streaming pipeline: {e}", exc_info=True)
+            yield f"event: error\ndata: {json.dumps({'detail': str(e)}, ensure_ascii=False)}\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )

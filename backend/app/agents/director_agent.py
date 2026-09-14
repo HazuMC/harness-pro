@@ -34,6 +34,9 @@ class DirectorAgent:
     def __init__(self):
         self.provider = "deepseek"
         self.deepseek_api_key = settings.DEEPSEEK_API_KEY
+        self.openrouter_api_key = settings.OPENROUTER_API_KEY
+        self.openrouter_base_url = settings.OPENROUTER_BASE_URL
+        self.openai_api_key = getattr(settings, "OPENAI_API_KEY", None)
 
     def _build_user_prompt(self, request: StoryRequest) -> str:
         is_long = request.story_type in ["long", "truyen_dai", "dài", "dai"]
@@ -56,17 +59,22 @@ Hãy phân tích và chia thành các phân cảnh JSON theo đúng cấu trúc.
             return None
         
         models_to_try = [
-            settings.DEEPSEEK_MODEL or "deepseek-v4-flash",
-            settings.DEEPSEEK_MODEL_PRO or "deepseek-v4-pro",
+            settings.DEEPSEEK_MODEL or "deepseek-chat",
+            settings.DEEPSEEK_MODEL_PRO or "deepseek-chat",
             "deepseek-chat"
         ]
         
-        for model_name in models_to_try:
+        # Loại bỏ trùng lặp giữ nguyên thứ tự
+        seen = set()
+        unique_models = [m for m in models_to_try if not (m in seen or seen.add(m))]
+        
+        for model_name in unique_models:
             try:
                 from openai import OpenAI
                 client = OpenAI(
                     api_key=api_key,
-                    base_url=settings.DEEPSEEK_BASE_URL
+                    base_url=settings.DEEPSEEK_BASE_URL,
+                    timeout=25.0
                 )
                 response = client.chat.completions.create(
                     model=model_name,
@@ -85,27 +93,50 @@ Hãy phân tích và chia thành các phân cảnh JSON theo đúng cấu trúc.
                 continue
         return None
 
-    def _call_openai(self, user_prompt: str) -> Optional[Dict[str, Any]]:
-        api_key = self.openai_api_key or settings.OPENAI_API_KEY or os.getenv("OPENAI_API_KEY", "")
-        if not api_key:
-            return None
-        try:
-            from openai import OpenAI
-            client = OpenAI(api_key=api_key)
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": DIRECTOR_SYSTEM_PROMPT},
-                    {"role": "user", "content": user_prompt}
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.7
-            )
-            content = response.choices[0].message.content
-            return json.loads(content)
-        except Exception as e:
-            logger.error(f"Lỗi gọi OpenAI: {e}")
-            return None
+    def _call_fallback_ai(self, user_prompt: str) -> Optional[Dict[str, Any]]:
+        """Fallback qua OpenRouter Qwen hoặc OpenAI khi DeepSeek quá tải/lỗi"""
+        if self.openrouter_api_key:
+            try:
+                from openai import OpenAI
+                client = OpenAI(
+                    api_key=self.openrouter_api_key,
+                    base_url=self.openrouter_base_url,
+                    timeout=25.0
+                )
+                response = client.chat.completions.create(
+                    model="qwen/qwen-2.5-72b-instruct",
+                    messages=[
+                        {"role": "system", "content": DIRECTOR_SYSTEM_PROMPT},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    temperature=0.7
+                )
+                content = response.choices[0].message.content
+                logger.info("Model 1 (Đạo Diễn): Đã hoàn thành kịch bản qua OpenRouter fallback")
+                return json.loads(content)
+            except Exception as e:
+                logger.warning(f"Lỗi fallback OpenRouter: {e}")
+
+        openai_key = self.openai_api_key or os.getenv("OPENAI_API_KEY", "")
+        if openai_key:
+            try:
+                from openai import OpenAI
+                client = OpenAI(api_key=openai_key, timeout=25.0)
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": DIRECTOR_SYSTEM_PROMPT},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    temperature=0.7
+                )
+                content = response.choices[0].message.content
+                return json.loads(content)
+            except Exception as e:
+                logger.error(f"Lỗi gọi OpenAI: {e}")
+        return None
 
     def _generate_fallback_template(self, request: StoryRequest) -> Dict[str, Any]:
         """Tạo phân cảnh trực tiếp bám sát prompt khi chưa có API key"""
@@ -190,9 +221,9 @@ Hãy phân tích và chia thành các phân cảnh JSON theo đúng cấu trúc.
         # 1. Gọi DeepSeek làm Model Đạo Diễn chính
         result_json = self._call_deepseek(user_prompt)
 
-        # 2. Fallback OpenAI (nếu có key)
+        # 2. Fallback AI (OpenRouter / OpenAI)
         if not result_json:
-            result_json = self._call_openai(user_prompt)
+            result_json = self._call_fallback_ai(user_prompt)
 
         # 3. Fallback thuật toán cấu trúc nội bộ nếu mất mạng/hết quota
         if not result_json:

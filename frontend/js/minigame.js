@@ -38,6 +38,7 @@ class ClapperboardRunner {
 
     bindEvents() {
         this.handleJump = (e) => {
+            if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
             if (e.type === "keydown" && e.code !== "Space") return;
             if (e.type === "keydown") e.preventDefault();
 

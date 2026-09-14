@@ -1,4 +1,14 @@
 import os
+import sys
+
+# Đảm bảo môi trường Windows không bị lỗi Unicode/Charmap
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse

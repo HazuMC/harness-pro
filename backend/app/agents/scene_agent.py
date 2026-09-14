@@ -99,7 +99,7 @@ Bóc tách toàn bộ kịch bản trên thành chuỗi 6-8 khung hình chi ti�
             for model_name in models_to_try:
                 try:
                     from openai import OpenAI
-                    client = OpenAI(api_key=api_key, base_url=self.base_url)
+                    client = OpenAI(api_key=api_key, base_url=self.base_url, timeout=25.0)
                     resp = client.chat.completions.create(
                         model=model_name,
                         messages=[
@@ -121,7 +121,7 @@ Bóc tách toàn bộ kịch bản trên thành chuỗi 6-8 khung hình chi ti�
         if openrouter_key:
             try:
                 from openai import OpenAI
-                client = OpenAI(api_key=openrouter_key, base_url=settings.OPENROUTER_BASE_URL)
+                client = OpenAI(api_key=openrouter_key, base_url=settings.OPENROUTER_BASE_URL, timeout=25.0)
                 resp = client.chat.completions.create(
                     model="qwen/qwen-2.5-72b-instruct",
                     messages=[
