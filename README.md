@@ -1,16 +1,16 @@
-# 🎬 HARNESS PRO - AI-Powered Career Guidance & Commercial Storyboard Platform
+# 🎬 HARNESS PRO - AI-Powered Career Guidance & Visual Storyboard Research Platform
 
-> Dự án tham gia cuộc thi KHKT khóa JSB12. Nền tảng ứng dụng Multi-Agent AI (FastAPI + LangGraph) định hướng nghề nghiệp và kiến tạo kịch bản, phân cảnh hình ảnh thương mại (TVC & Commercial Storyboard) với ngôn ngữ thiết kế tối giản Apple Dark Mode.
+> Dự án tham gia cuộc thi KHKT khóa JSB12. Nền tảng ứng dụng Multi-Agent AI (FastAPI + LangGraph) định hướng nghề nghiệp và kiến tạo kịch bản, phân cảnh hình ảnh điện ảnh trực quan với ngôn ngữ thiết kế tối giản Apple Dark Mode.
 
 ---
 
 ## 🌟 Tính Năng Nổi Bật
 
 1. **Định Hướng Nghề Nghiệp Sáng Tạo (Career Guidance):**
-   - Lộ trình nghề nghiệp: Biên Kịch TVC, Đạo Diễn Hình Ảnh (DoP), Storyboard Artist, TikTok Marketer.
+   - Lộ trình nghề nghiệp: Biên Kịch Điện Ảnh & Video, Đạo Diễn Hình Ảnh (DoP), Storyboard Artist, Sáng tạo Nội dung Số.
    - Trợ lý AI tư vấn kịch bản và phân tích kỹ năng trực tiếp.
 
-2. **Studio Phân Cảnh Thương Mại (Commercial Storyboard Studio):**
+2. **Studio Phân Cảnh Trực Quan (Visual Storyboard Studio):**
    - Khởi tạo kịch bản phân cảnh chi tiết (Cỡ cảnh, Góc máy, Chuyển động, Lời thoại, Mô tả ánh sáng).
    - Tích hợp mô hình AI kết xuất hình ảnh phân cảnh chuẩn Pro Display.
 
@@ -19,7 +19,7 @@
    - Tương tác mượt mà, tối ưu hóa trải nghiệm trên mọi thiết bị.
 
 4. **Kiến Trúc Multi-Agent Hiện Đại:**
-   - **Director Agent:** Phân tích ý tưởng, điều phối kịch bản và thông điệp thương hiệu.
+   - **Director Agent:** Phân tích ý tưởng, điều phối kịch bản và thông điệp truyền tải.
    - **Scene Agent:** Bóc tách kịch bản thành từng cảnh quay chi tiết với thông số điện ảnh.
    - **Image Agent:** Tạo prompt điện ảnh và kết xuất hình ảnh phân cảnh.
 
@@ -45,11 +45,11 @@ JSB12 PROJECT/
 │   ├── css/                 # Apple Design System & Bento Styling
 │   ├── js/                  # Logic xử lý API, Storyboard & Chat
 │   ├── generated_images/    # Thư mục chứa hình ảnh phân cảnh đã tạo
-│   ├── index.html           # Trang chủ giới thiệu & Báo giá
+│   ├── index.html           # Trang chủ giới thiệu nền tảng
 │   ├── storyboard.html      # Không gian làm việc Storyboard Studio
 │   ├── chat.html            # Trợ lý định hướng kịch bản AI
-│   ├── gallery.html         # Kho Portfolio cộng đồng
-│   └── info.html            # Bạch thư hệ thống & Thông số kỹ thuật
+│   ├── gallery.html         # Kho Portfolio đồ án & tác phẩm
+│   └── info.html            # Thông tin hệ thống & Thông số kỹ thuật
 ├── .gitignore               # Bộ lọc bỏ qua tệp nhạy cảm và cache
 └── README.md
 ```
