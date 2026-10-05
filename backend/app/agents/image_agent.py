@@ -30,11 +30,11 @@ class StoryboardImageAgent:
     def __init__(self):
         self.openrouter_api_key = settings.OPENROUTER_API_KEY
         self.openrouter_base_url = settings.OPENROUTER_BASE_URL
-        self.model_name = settings.QWEN_MODEL or "qwen/qwen-3-image-pro"
+        self.model_name = getattr(settings, "OPENROUTER_IMAGE_MODEL", None) or "openai/gpt-image-2.5-flare"
 
     def _sanitize_and_translate_prompt(self, raw_prompt: str, style: str = "Cinematic") -> str:
         """
-        Làm sạch, định hình và tối ưu hóa Prompt tiếng Anh chuyên sâu cho Qwen 3 Image Pro
+        Làm sạch, định hình và tối ưu hóa Prompt tiếng Anh chuyên sâu cho mô hình tạo ảnh
         """
         clean = re.sub(r'^(visual prompt|prompt|mô tả visual|shot|cảnh \d+|phân cảnh \d+):?\s*', '', raw_prompt, flags=re.IGNORECASE)
         clean = clean.replace("\n", " ").replace("\r", " ").replace('"', '').replace("'", '').replace("?", '').replace("&", " and ").strip()
@@ -54,18 +54,94 @@ class StoryboardImageAgent:
         modifier = style_modifiers.get(style, "cinematic film shot, detailed composition, sharp focus, 8k")
         return f"{clean}, {modifier}"
 
-    def _call_openrouter_qwen_image(self, prompt: str) -> Optional[str]:
+    def _call_openrouter_image(self, prompt: str, frame_num: int = 1, seed: int = 42) -> Optional[str]:
         """
-        Bỏ qua OpenRouter Image do endpoint này yêu cầu gói trả phí đặc thù hoặc trả về 403/404,
-        tránh làm chậm 90s cho chuỗi khung hình.
+        Gọi OpenRouter Images API để sinh ảnh phân cảnh chất lượng cao và lưu cục bộ
         """
+        api_key = self.openrouter_api_key or settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY", "")
+        if not api_key:
+            return None
+
+        preferred_model = getattr(settings, "OPENROUTER_IMAGE_MODEL", None) or "openai/gpt-image-2.5-flare"
+        models_to_try = [preferred_model, "openai/gpt-image-2.5-flare", "openai/gpt-5-image-mini", "google/gemini-2.5-flash-image"]
+        seen = set()
+        models = [m for m in models_to_try if m and not (m in seen or seen.add(m))]
+
+        endpoint = f"{self.openrouter_base_url.rstrip('/')}/images/generations"
+
+        for model in models:
+            try:
+                payload = {
+                    "prompt": prompt,
+                    "model": model
+                }
+                req = urllib.request.Request(
+                    endpoint,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={
+                        "Authorization": f"Bearer {api_key}",
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "http://localhost:8000",
+                        "X-Title": "HARNESS Studio Storyboard"
+                    }
+                )
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    if resp.status == 200:
+                        data = json.loads(resp.read().decode("utf-8"))
+                        if "data" in data and len(data["data"]) > 0:
+                            img_obj = data["data"][0]
+                            file_id = f"frame_or_{int(time.time() * 1000) % 10000000}_{frame_num}_{seed}"
+                            target_file = os.path.join(GENERATED_DIR, f"{file_id}.jpg")
+                            local_web_url = f"/generated_images/{file_id}.jpg"
+
+                            if "b64_json" in img_obj and img_obj["b64_json"]:
+                                img_bytes = base64.b64decode(img_obj["b64_json"])
+                                with open(target_file, "wb") as f:
+                                    f.write(img_bytes)
+                                logger.info(f"Đã sinh ảnh qua OpenRouter ({model}) phân cảnh #{frame_num}: {local_web_url}")
+                                return local_web_url
+
+                            if "url" in img_obj and img_obj["url"]:
+                                img_url = img_obj["url"]
+                                try:
+                                    dl_req = urllib.request.Request(
+                                        img_url,
+                                        headers={"User-Agent": "Mozilla/5.0"}
+                                    )
+                                    with urllib.request.urlopen(dl_req, timeout=12) as dl_resp:
+                                        if dl_resp.status == 200:
+                                            with open(target_file, "wb") as f:
+                                                f.write(dl_resp.read())
+                                            logger.info(f"Đã tải ảnh OpenRouter ({model}) phân cảnh #{frame_num}: {local_web_url}")
+                                            return local_web_url
+                                except Exception:
+                                    return img_url
+            except urllib.error.HTTPError as e:
+                err_text = ""
+                try:
+                    err_text = e.read().decode("utf-8")
+                except Exception:
+                    pass
+                logger.warning(f"Lỗi OpenRouter HTTP {e.code} ({model}) phân cảnh #{frame_num}: {err_text}")
+                continue
+            except Exception as e:
+                logger.warning(f"Lỗi OpenRouter ({model}) phân cảnh #{frame_num}: {e}")
+                continue
+
         return None
 
     def _synthesize_image_url(self, prompt: str, seed: int = 42, style: str = "Cinematic", frame_num: int = 1) -> str:
         """
-        Sinh ảnh qua Qwen 3 Neural Engine Mirror & Caching với cơ chế Retry & Safe Fallback
+        Sinh ảnh qua OpenRouter API trước, nếu lỗi hoặc timeout sẽ tự động chuyển sang mirror fallback
         """
         final_prompt = self._sanitize_and_translate_prompt(prompt, style)
+        
+        # 1. Thử tạo ảnh chất lượng cao qua OpenRouter API với key mới
+        openrouter_img = self._call_openrouter_image(final_prompt, frame_num=frame_num, seed=seed)
+        if openrouter_img:
+            return openrouter_img
+
+        # 2. Fallback an toàn: Sinh ảnh qua Neural Mirror Engine
         encoded_prompt = urllib.parse.quote(final_prompt)
         file_id = f"frame_{int(time.time() * 1000) % 10000000}_{frame_num}_{seed}"
         target_file = os.path.join(GENERATED_DIR, f"{file_id}.jpg")
@@ -89,7 +165,7 @@ class StoryboardImageAgent:
                         if len(img_data) > 1000:
                             with open(target_file, "wb") as f:
                                 f.write(img_data)
-                            logger.info(f"Đã lưu ảnh phân cảnh #{frame_num} thành công: {local_web_url}")
+                            logger.info(f"Đã lưu ảnh phân cảnh #{frame_num} (Mirror) thành công: {local_web_url}")
                             return local_web_url
             except urllib.error.HTTPError as e:
                 if e.code == 429 and attempt == 0:
@@ -110,7 +186,7 @@ class StoryboardImageAgent:
         previous_frame: Optional[StoryboardFrame] = None
     ) -> GenerateImageResponse:
         """
-        Tạo ảnh cho một khung hình đơn lẻ bằng Qwen 3 Image Pro
+        Tạo ảnh cho một khung hình đơn lẻ
         """
         frame_num = request.frame_number
         seed = 1000 + frame_num * 31 + random.randint(1, 100)
@@ -123,12 +199,14 @@ class StoryboardImageAgent:
             frame_num=frame_num
         )
         
+        model_used = "GPT Image 2.5 Flare" if img_url.startswith("/generated_images/frame_or_") else "Storyboard Mirror Engine"
+        
         return GenerateImageResponse(
             success=True,
             frame_number=frame_num,
             image_url=img_url,
-            model_used="Qwen 3 Image Pro",
-            message=f"Tạo ảnh phân cảnh #{frame_num} thành công bằng Qwen 3 Image Pro"
+            model_used=model_used,
+            message=f"Tạo ảnh phân cảnh #{frame_num} thành công bằng {model_used}"
         )
 
     async def generate_parallel_storyboard_stream(
@@ -138,7 +216,7 @@ class StoryboardImageAgent:
         max_concurrency: int = 2
     ):
         """
-        Khởi tạo các worker clone Qwen 3 Pro xử lý song song từng khung hình.
+        Khởi tạo các worker xử lý song song từng khung hình.
         Yield kết quả ngay lập tức khi mỗi worker hoàn thành:
         (frame_number, image_url, completed_count, total_count, model_used)
         """
@@ -167,7 +245,7 @@ class StoryboardImageAgent:
                     logger.error(f"Lỗi worker frame #{frame.frame_number}: {e}")
                     clean_p = urllib.parse.quote(frame.visual_prompt[:120])
                     fallback_url = f"https://image.pollinations.ai/prompt/{clean_p}?width=800&height=450&nologo=true"
-                    return frame.frame_number, fallback_url, "Qwen 3 Image Pro"
+                    return frame.frame_number, fallback_url, "GPT Image 2.5 Flare"
 
         # Phân bổ thời gian khởi động so le nhẹ nhàng
         tasks = [asyncio.create_task(_worker(f, delay=idx * 0.35)) for idx, f in enumerate(frames)]

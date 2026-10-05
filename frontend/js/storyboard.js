@@ -79,17 +79,7 @@ async function handleRunFullAutoPipeline() {
         return;
     }
 
-    // 1. Kiểm tra và trừ Token
-    if (typeof deductTokens === "function") {
-        const hasEnough = deductTokens(50);
-        if (!hasEnough) {
-            showToast("Bạn không đủ Token để tạo Storyboard! Cần 50 Tokens.", "warning");
-            if (typeof showClaimTokensModal === "function") {
-                showClaimTokensModal();
-            }
-            return;
-        }
-    }
+    // 1. Tạo Storyboard trực tiếp phục vụ nghiên cứu & học tập (Không giới hạn)
 
     const btn = document.getElementById("btn-create-storyboard");
     if (btn) {

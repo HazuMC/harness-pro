@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HARNESS PRO - Trợ Lý Hướng Nghiệp & Biên Kịch Thương Mại</title>
+    <title>HARNESS PRO - Trợ Lý Hướng Nghiệp & Biên Kịch Số</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -52,7 +52,7 @@
                     Trợ Lý Hướng Nghiệp & Biên Kịch.
                 </h1>
                 <p class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
-                    Tư vấn lộ trình nghề nghiệp sáng tạo số, giải đáp kỹ thuật điện ảnh và hỗ trợ lên kịch bản phân cảnh TVC, video viral TikTok.
+                    Tư vấn lộ trình nghề nghiệp sáng tạo số, giải đáp kỹ thuật điện ảnh và hỗ trợ lên kịch bản phân cảnh chi tiết.
                 </p>
             </div>
 
@@ -88,7 +88,7 @@
                     <div class="grid grid-cols-2 gap-1 p-1 bg-[#1d1d1f] rounded-full border border-white/10 text-xs">
                         <button type="button" id="tab-btn-commercial" onclick="switchPresetTab('commercial')"
                             class="py-1.5 px-2 rounded-full bg-white text-black font-semibold transition cursor-pointer">
-                            Thương Mại & TVC
+                            Kịch Bản & Phân Cảnh
                         </button>
                         <button type="button" id="tab-btn-career" onclick="switchPresetTab('career')"
                             class="py-1.5 px-2 rounded-full text-[#86868b] hover:text-white font-medium transition cursor-pointer">
@@ -98,39 +98,39 @@
 
                     <!-- Commercial Presets List -->
                     <div class="space-y-2" id="commercial-presets-list">
-                        <button type="button" data-preset-prompt="Hãy lên cho tôi kịch bản TVC 30s quảng cáo thức uống thể thao, chú trọng góc máy Extreme Close-Up giọt mồ hôi và năng lượng bùng nổ khi uống."
+                        <button type="button" data-preset-prompt="Hãy lên cho tôi kịch bản video 30s giới thiệu thức uống thể thao, chú trọng góc máy Extreme Close-Up giọt mồ hôi và năng lượng bùng nổ khi mở nắp."
                             class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
-                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🥤 TVC Nước uống thể thao 30s</span>
-                            <span class="text-[11px] text-[#86868b] line-clamp-1">Cấu trúc năng lượng bứt phá & Macro cận cảnh</span>
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🥤 Video Nước Uống Năng Lượng 30s</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Cấu trúc bứt phá & Macro cận cảnh</span>
                         </button>
-                        <button type="button" data-preset-prompt="Gợi ý kịch bản video TikTok 45s review giải pháp máy lọc không khí thông minh, sử dụng Hook 3 giây đầu gây tò mò và kêu gọi đặt mua."
+                        <button type="button" data-preset-prompt="Gợi ý kịch bản video ngắn 45s review giải pháp máy lọc không khí thông minh, sử dụng Hook 3 giây đầu gây tò mò và tạo sự thư thái."
                             class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
-                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">📱 Video TikTok E-Com Hook 3s</span>
-                            <span class="text-[11px] text-[#86868b] line-clamp-1">Giải pháp giữ chân người xem & chốt đơn</span>
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">📱 Video Ngắn Sáng Tạo Hook 3s</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Kỹ thuật giữ chân người xem tự nhiên</span>
                         </button>
-                        <button type="button" data-preset-prompt="Lên ý tưởng phim câu chuyện thương hiệu kỷ niệm 10 năm của một công ty khởi nghiệp công nghệ từ số 0 đến doanh nghiệp nghìn tỷ."
+                        <button type="button" data-preset-prompt="Lên ý tưởng phim kể câu chuyện hành trình 10 năm của một nhóm nghiên cứu công nghệ từ phòng trọ nhỏ đến những giải pháp hữu ích cho xã hội."
                             class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
-                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🏢 Phim Thương Hiệu Doanh Nghiệp</span>
-                            <span class="text-[11px] text-[#86868b] line-clamp-1">Tái hiện khát vọng khởi nghiệp & thành tựu</span>
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🏢 Phim Kể Chuyện Hành Trình Phát Triển</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Tái hiện khát vọng sáng tạo & cống hiến</span>
                         </button>
                     </div>
 
                     <!-- Career Presets List (Hidden by default) -->
                     <div class="space-y-2 hidden" id="career-presets-list">
-                        <button type="button" data-preset-prompt="Tôi thích viết lách và tưởng tượng nhưng chưa biết bắt đầu từ đâu. Giữa Biên kịch điện ảnh và Copywriter quảng cáo, tôi nên chọn hướng nào?"
+                        <button type="button" data-preset-prompt="Tôi thích viết lách và tưởng tượng nhưng chưa biết bắt đầu từ đâu. Giữa Biên kịch điện ảnh và Biên kịch nội dung số, tôi nên bắt đầu thế nào?"
                             class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
-                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🎯 Định hướng: Biên kịch vs Copywriter</span>
-                            <span class="text-[11px] text-[#86868b] line-clamp-1">Tư vấn thế mạnh bản thân & cơ hội nghề</span>
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🎯 Định hướng: Biên kịch điện ảnh & nội dung số</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Tư vấn thế mạnh bản thân & kỹ năng cần có</span>
                         </button>
-                        <button type="button" data-preset-prompt="Để trở thành một Đạo diễn Hình ảnh (DoP) chuyên nghiệp tại các Production House, tôi cần trau dồi những kỹ năng và kinh nghiệm gì?"
+                        <button type="button" data-preset-prompt="Để trở thành một Đạo diễn Hình ảnh (DoP) chuyên nghiệp, tôi cần trau dồi những kỹ năng và kiến thức gì?"
                             class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
                             <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🎥 Lộ trình trở thành DoP chuyên nghiệp</span>
-                            <span class="text-[11px] text-[#86868b] line-clamp-1">Kỹ năng góc máy, ánh sáng & kinh nghiệm</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Kỹ năng góc máy, ánh sáng & chỉ đạo hình ảnh</span>
                         </button>
-                        <button type="button" data-preset-prompt="Hãy phân tích mức lương và nhu cầu tuyển dụng của vị trí Storyboard Artist và Creative Producer trong ngành truyền thông hiện nay."
+                        <button type="button" data-preset-prompt="Hãy phân tích vai trò và kỹ năng cốt lõi của vị trí Storyboard Artist trong quy trình sản xuất điện ảnh hiện nay."
                             class="chat-preset-btn w-full text-left p-3.5 rounded-2xl bg-[#1d1d1f] hover:bg-[#2d2d30] border border-white/10 hover:border-white/20 transition text-xs text-[#f5f5f7] group cursor-pointer">
-                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">💰 Thu nhập & Tiềm năng ngành Sáng tạo</span>
-                            <span class="text-[11px] text-[#86868b] line-clamp-1">Báo cáo mức thu nhập và cơ hội thăng tiến</span>
+                            <span class="font-semibold block mb-1 text-white group-hover:text-[#2997ff]">🚀 Vai trò & Kỹ năng Storyboard Artist</span>
+                            <span class="text-[11px] text-[#86868b] line-clamp-1">Phân tích kỹ năng phân cảnh và ngôn ngữ hình ảnh</span>
                         </button>
                     </div>
 
@@ -203,14 +203,14 @@
                         </div>
                         <div class="bg-[#1d1d1f] border border-white/10 rounded-2xl rounded-tl-none p-5 max-w-2xl text-xs sm:text-sm text-[#f5f5f7] leading-relaxed space-y-3 shadow-sm">
                             <p class="font-bold text-white text-sm">
-                                Xin chào! Tôi là Trợ Lý AI Hướng Nghiệp & Biên Kịch Thương Mại của HARNESS PRO.
+                                Xin chào! Tôi là Trợ Lý AI Hướng Nghiệp & Biên Kịch của HARNESS PRO.
                             </p>
                             <p class="text-[#86868b]">
-                                Tôi sẵn sàng đồng hành cùng bạn trong hai nhiệm vụ trọng tâm:
+                                Tôi sẵn sàng đồng hành cùng bạn trong các nhiệm vụ học tập và sáng tạo:
                             </p>
                             <ul class="space-y-1.5 text-xs text-[#f5f5f7] list-disc list-inside">
                                 <li><b>🎓 Định hướng nghề nghiệp:</b> Tư vấn thế mạnh, kỹ năng cần học và lộ trình trở thành Biên kịch, DoP hoặc Storyboard Artist chuyên nghiệp.</li>
-                                <li><b>💼 Sản xuất thương mại:</b> Xây dựng kịch bản phân cảnh TVC, video viral TikTok, phim giới thiệu doanh nghiệp chuẩn điện ảnh.</li>
+                                <li><b>🎬 Sáng tạo kịch bản:</b> Xây dựng kịch bản phân cảnh, video ngắn sáng tạo, phim giới thiệu chuẩn điện ảnh.</li>
                             </ul>
                             <p class="text-xs text-[#86868b] pt-1 border-t border-white/10">
                                 Hãy chọn gợi ý ở cột bên trái hoặc nhập yêu cầu trực tiếp bên dưới nhé!
@@ -225,7 +225,7 @@
                     <form id="chat-form" class="flex items-center gap-3">
                         <div class="relative flex-grow">
                             <textarea id="chat-input" rows="1"
-                                placeholder="Hỏi về hướng nghiệp, kỹ năng điện ảnh, hoặc: 'Lên kịch bản TVC 30s về...'"
+                                placeholder="Hỏi về hướng nghiệp, kỹ năng điện ảnh, hoặc: 'Lên kịch bản video 30s về...'"
                                 class="apple-input w-full px-4 py-3 text-xs sm:text-sm placeholder-[#6e6e73] outline-none transition resize-none leading-normal"></textarea>
                         </div>
                         <button type="submit" id="btn-send-chat"
@@ -253,7 +253,7 @@
                 <span>•</span>
                 <span>Tác giả: <b class="text-[#f5f5f7]">bigblyatcccp</b></span>
             </div>
-            <p class="text-[11px] text-[#6e6e73]">Trợ Lý Hướng Nghiệp & Biên Kịch Thương Mại Điện Ảnh</p>
+            <p class="text-[11px] text-[#6e6e73]">Trợ Lý Hướng Nghiệp & Biên Kịch Điện Ảnh Số</p>
         </div>
     </footer>
 

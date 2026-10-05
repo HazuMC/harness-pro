@@ -22,10 +22,12 @@ class Settings:
     DEEPSEEK_MODEL_PRO: str = os.getenv("DEEPSEEK_MODEL_PRO", "deepseek-v4-pro")
     DEFAULT_DIRECTOR_PROVIDER: str = os.getenv("DEFAULT_DIRECTOR_PROVIDER", "deepseek")
     
-    # Model 3: OpenRouter Qwen 3 Image Pro
+    # Model 3: OpenRouter Image Generation
     OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY", "")
     OPENROUTER_BASE_URL: str = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+    OPENROUTER_IMAGE_MODEL: str = os.getenv("OPENROUTER_IMAGE_MODEL", "openai/gpt-image-2.5-flare")
+    IMAGE_MODEL: str = os.getenv("IMAGE_MODEL", "openai/gpt-image-2.5-flare")
     QWEN_API_KEY: str = os.getenv("QWEN_API_KEY", "")
-    QWEN_MODEL: str = os.getenv("QWEN_MODEL", "qwen/qwen-3-image-pro")
+    QWEN_MODEL: str = os.getenv("QWEN_MODEL", "openai/gpt-image-2.5-flare")
 
 settings = Settings()

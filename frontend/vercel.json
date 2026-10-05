@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/storyboard", "destination": "/storyboard.html" },
+    { "source": "/chat", "destination": "/chat.html" },
+    { "source": "/gallery", "destination": "/gallery.html" },
+    { "source": "/info", "destination": "/info.html" },
+    { "source": "/test", "destination": "/test.html" }
+  ]
+}

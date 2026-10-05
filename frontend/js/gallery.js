@@ -1,5 +1,4 @@
-// gallery.js - Quản lý Kho Portfolio & Hồ Sơ Năng Lực Thương Mại (Commercial & Career Showcase)
-
+// gallery.js - Quản lý Kho Portfolio & Hồ Sơ Tác Phẩm Dự Án
 document.addEventListener("DOMContentLoaded", () => {
     initGalleryModule();
 });
@@ -8,8 +7,8 @@ let currentFilter = "all";
 let currentSearch = "";
 let selectedProject = null;
 
-// Các dự án mẫu chuẩn thương mại & hướng nghiệp khởi tạo ban đầu
-const STARTER_COMMERCIAL_PROJECTS = [
+// Các dự án mẫu khởi tạo ban đầu cho nghiên cứu & học tập
+const STARTER_PROJECTS = [
     {
         id: "proj_tvc_beverage_01",
         title: "TVC 30s: Nước Khoáng Thể Thao Tươi Mát Bứt Phá",
@@ -137,19 +136,19 @@ function initGalleryModule() {
 function ensureInitialProjects() {
     const existing = localStorage.getItem("saved_storyboard_projects");
     if (!existing || JSON.parse(existing).length === 0) {
-        localStorage.setItem("saved_storyboard_projects", JSON.stringify(STARTER_COMMERCIAL_PROJECTS));
+        localStorage.setItem("saved_storyboard_projects", JSON.stringify(STARTER_PROJECTS));
     }
 }
 
 function getStoredProjects() {
     try {
         const data = localStorage.getItem("saved_storyboard_projects");
-        if (!data) return STARTER_COMMERCIAL_PROJECTS;
+        if (!data) return STARTER_PROJECTS;
         const parsed = JSON.parse(data);
-        return parsed.length > 0 ? parsed : STARTER_COMMERCIAL_PROJECTS;
+        return parsed.length > 0 ? parsed : STARTER_PROJECTS;
     } catch (e) {
         console.error("Lỗi đọc projects từ localStorage:", e);
-        return STARTER_COMMERCIAL_PROJECTS;
+        return STARTER_PROJECTS;
     }
 }
 
@@ -274,7 +273,7 @@ function renderGallery() {
                 <div class="max-w-md mx-auto space-y-1">
                     <h3 class="text-base font-bold text-slate-950">Kho Portfolio Trống</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Bạn chưa lưu dự án nào. Hãy vào <b>Storyboard Studio</b> và bấm <b>"Lưu Vào Kho Portfolio"</b> để quản lý tác phẩm thương mại của bạn tại đây.
+                        Bạn chưa lưu dự án nào. Hãy vào <b>Storyboard Studio</b> và bấm <b>"Lưu Vào Kho Portfolio"</b> để quản lý tác phẩm đồ án của bạn tại đây.
                     </p>
                 </div>
                 <div class="pt-2">
@@ -302,13 +301,13 @@ function renderGallery() {
         const coverImg = proj.cover_image && proj.cover_image.length > 5 ? proj.cover_image : "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=800&auto=format&fit=crop&q=80";
         
         let badgeColor = "bg-indigo-50 text-indigo-700 border-indigo-200/60";
-        let badgeLabel = "Commercial Ready";
+        let badgeLabel = "Dự án Tiêu chuẩn";
         if (proj.category === "education" || proj.title.includes("Hướng nghiệp") || proj.title.includes("Đồ án")) {
             badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200/60";
-            badgeLabel = "Student Portfolio";
+            badgeLabel = "Đồ án Học tập";
         } else if (proj.category === "corporate") {
             badgeColor = "bg-purple-50 text-purple-700 border-purple-200/60";
-            badgeLabel = "Corporate Pitch";
+            badgeLabel = "Phim Giới thiệu";
         }
 
         return `
@@ -372,7 +371,7 @@ window.openProjectModal = function(projId) {
     selectedProject = proj;
 
     document.getElementById("modal-title").textContent = proj.title;
-    document.getElementById("modal-badge-style").textContent = proj.style || "Commercial";
+    document.getElementById("modal-badge-style").textContent = proj.style || "Tiêu chuẩn";
     document.getElementById("modal-date-text").textContent = `Lưu ngày: ${proj.created_at || '2026'} • HARNESS PRO Portfolio`;
 
     const body = document.getElementById("modal-body");
@@ -381,7 +380,7 @@ window.openProjectModal = function(projId) {
     body.innerHTML = `
         <div class="p-4 bg-[#1d1d1f] rounded-2xl border border-white/10 text-xs text-[#86868b] leading-relaxed space-y-2">
             <div class="font-semibold text-white uppercase text-[10px] tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-file-lines text-[#2997ff]"></i> Tóm tắt kịch bản / Commercial Brief:
+                <i class="fa-solid fa-file-lines text-[#2997ff]"></i> Tóm tắt kịch bản / Project Brief:
             </div>
             <p class="text-[#f5f5f7]">${escapeHtml(proj.summary || proj.title)}</p>
         </div>
